@@ -1,0 +1,38 @@
+<meta charset="utf-8"/>
+<textarea name="txt" id="module-id-c">
+  <div class="f-cb w-lyx mdl-c">
+    <div class="lyr fr">
+      <div class="m-info_block">
+        <h4 class="info_block_title">温馨提示</h4>
+        <p class="info_block_cnt">你可以填写你的基本信息，方便别人更了解你。这些信息将显示在博客“关于我”页面及首页“关于我”模块。部分信息还将显示在你的日志侧边栏。</p>
+      </div>
+    </div>
+    <div class="lym j-flag"></div>
+  </div>
+</textarea>
+<textarea name="jst" id="module-id-c-form">
+  <table class="w-mtb">
+    <tr><td class="c0">昵称：</td>
+        <td class="c1"><input class="wd0" type="text" value="${nickname}" placeholder="请输入昵称"/></td>
+    <tr><td class="c0">真实姓名：</td>
+        <td class="c1"><input class="wd0" type="text" value="${realname}" placeholder="请输入真实姓名"/></td>
+    <tr><td class="c0">性别：</td>
+        <td class="c1">
+          <label><input type="radio" name="xxx" {if sex==1}checked{/if}/>男</label>
+          <label><input type="radio" name="xxx" {if sex==0}checked{/if}/>女</label>
+        </td>
+    <tr><td class="c0">自我介绍：</td>
+        <td class="c1"><textarea class="wd0" placeholder="请输入自我介绍">${description}<&#47;textarea></td>
+    <tr><td class="c0">近期心愿：</td>
+        <td class="c1"><textarea class="wd0" placeholder="请输入近期心愿">${will}<&#47;textarea></td>
+    <tr class="x">
+        <td class="c0">&nbsp;</td>
+        <td class="c1" colspan="2">
+          <button class="u-btn" data-action="update" type="button">修改</button>
+        </td>
+    </tr>
+  </table>
+</textarea>
+<!-- @TEMPLATE -->
+<textarea name="js"  data-src="./index.js"></textarea>
+<!-- /@TEMPLATE -->

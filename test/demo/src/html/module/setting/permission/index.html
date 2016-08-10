@@ -1,0 +1,61 @@
+<meta charset="utf-8"/>
+<textarea name="txt" id="module-id-e">
+  <div></div>
+</textarea>
+<textarea name="jst" id="module-id-e-form">
+  <div class="mdl-e">
+    <div class="w-jlk">
+      <p class="jtl">博客访问</p>
+      <div class="jbx">
+        <p><label><input type="radio" name="xx" {if access==0}checked{/if}/>允许所有人访问我的博客</label></p>
+        <p><label><input type="radio" name="xx" {if access==1}checked{/if}/>仅博友可以访问我的博客</label></p>
+        <p><label><input type="radio" name="xx" {if access==2}checked{/if}/>私人所有，谢绝其他人访问</label></p>
+      </div>
+    </div>
+    <div class="w-jlk">
+      <p class="jtl">消息中心权限设置</p>
+      <div class="jbx">
+        <p>评  论：选择让哪些人可以评论<select>
+          <option {if comment==0}selected{/if}>所有人</option>
+          <option {if comment==1}selected{/if}>我的博友</option>
+          <option {if comment==2}selected{/if}>只有自己</option>
+        </select></p>
+        <p>留  言：选择让哪些人可以留言<select>
+          <option {if leave==0}selected{/if}>所有人</option>
+          <option {if leave==1}selected{/if}>我的博友</option>
+          <option {if leave==2}selected{/if}>只有自己</option>
+        </select></p>
+        <p>短消息：选择让哪些人可以给我发短消息<select>
+          <option {if shortMsg==0}selected{/if}>所有人</option>
+          <option {if shortMsg==1}selected{/if}>我的博友</option>
+          <option {if shortMsg==2}selected{/if}>只有自己</option>
+        </select></p>
+      </div>
+    </div>
+    <div class="w-jlk">
+      <p class="jtl">博友验证</p>
+      <div class="jbx">
+        <p><label><input type="radio" name="xxx" {if verification}checked{/if}/>需要身份验证才能加我为博友</label></p>
+        <p><label><input type="radio" name="xxx" {if !verification}checked{/if}/>谢绝其他人加我为博友</label></p>
+      </div>
+    </div>
+    <div class="w-jlk">
+      <p class="jtl">引用权限设置</p>
+      <div class="jbx">
+        <p><label><input type="radio" name="xxxx" {if quote}checked{/if}/>允许引用</label></p>
+        <p><label><input type="radio" name="xxxx" {if !quote}checked{/if}/>禁止引用</label></p>
+      </div>
+    </div>
+    <div class="w-jlk">
+      <p class="jtl">风格权限设置</p>
+      <div class="jbx">
+        <p><label><input type="radio" name="xxxxx" {if frame}checked{/if}/>允许他人使用我正在使用的风格</label></p>
+        <p><label><input type="radio" name="xxxxx" {if frame}checked{/if}/>不允许他人使用我正在使用的风格</label></p>
+      </div>
+    </div>
+    <div class="jat"><button class="u-btn" data-action="update" type="button">修改</button></div>
+  </div>
+</textarea>
+<!-- @TEMPLATE -->
+<textarea name="js"  data-src="./index.js"></textarea>
+<!-- /@TEMPLATE -->

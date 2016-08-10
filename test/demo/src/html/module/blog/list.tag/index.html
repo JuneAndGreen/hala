@@ -1,0 +1,15 @@
+<meta charset="utf-8"/>
+<textarea name="txt" id="module-id-4">
+  <div class="m-info_block">
+    <h4 class="info_block_title">按标签查看</h4>
+    <div class="info_block_cnt j-flag"></div>
+  </div>
+</textarea>
+<textarea name="jst" id="jst-4-tag-list">
+  {list xlist as x}
+    <a class="info_block_itm j-list" href="#" data-action="tab" data-id="/blog/?tid=${x.id}" title="${x.name}(${x.count})">${x.name}(${x.count})</a>
+  {/list}
+</textarea>
+<!-- @TEMPLATE -->
+<textarea name="js"  data-src="./index.js"></textarea>
+<!-- /@TEMPLATE -->
