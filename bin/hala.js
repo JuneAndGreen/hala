@@ -9,8 +9,8 @@
 
 const Hala = require('../index');
 
-if(process.version < 'v4.4.7') {
-  console.log('node版本太低，建议提升node版本到v4.4.7以上');
+if(process.version < 'v4.4.0') {
+  console.log('node版本太低，建议提升node版本到v4.4.0以上');
   process.exit(1);
 }
 
