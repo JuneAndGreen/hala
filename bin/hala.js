@@ -34,3 +34,5 @@ commander
 		options.launch = !options.noLaunch;
 		new Hala(options);
 	});
+
+commander.emit('done');

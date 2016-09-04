@@ -30,10 +30,10 @@ class Server {
    */
   config(config) {
     this.webroot = config.webroot || process.cwd();
-    this.viewroot = path.join(config.webroot, config.viewroot || './');
-    this.resroot = path.join(config.webroot, config.resroot || './');
-    this.uploadroot = path.join(config.webroot, config.uploadroot || './');
-    this.viewroot = path.join(config.webroot, config.viewroot || './');
+    this.viewroot = path.join(this.webroot, config.viewroot || './');
+    this.resroot = path.join(this.webroot, config.resroot || './');
+    this.uploadroot = path.join(this.webroot, config.uploadroot || './');
+    this.viewroot = path.join(this.webroot, config.viewroot || './');
 
     this.routes = config.routes || {};
     this.port = parseInt(config.port || 8000);
