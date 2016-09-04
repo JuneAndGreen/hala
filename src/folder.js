@@ -34,7 +34,7 @@ module.exports = function(obj) {
       yield next;
     } else {
       // 访问文件夹
-      console.log(`访问了文件夹：${wholePath}。`);
+      console.log(`访问了文件夹：${wholePath}`);
       let files = [];
       let folders = [];
 

@@ -59,7 +59,7 @@ class Server {
     this.app.use(session(this.app));
 
     // 静态资源目录
-    this.app.use(staticDir(this.resroot));
+    this.app.use(staticDir(this.resroot, {index: 'THIS_IS_THE_DEFAULT_FILE_NAME'}));
 
     // 请求参数解析
     let bodyOpt = {strict: false};
