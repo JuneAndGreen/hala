@@ -31,6 +31,7 @@
   "dependencies": {
     "commander": "^2.9.0",
     "ejs": "^2.5.1",
+    "http-proxy": "^1.14.0",
     "koa": "^1.2.1",
     "koa-body": "^1.4.0",
     "koa-ejs": "^3.0.0",

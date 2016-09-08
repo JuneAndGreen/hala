@@ -6,6 +6,9 @@
 */
 
 const Router = require('koa-router');
+const urlLib = require('url');
+
+const proxy = require('./proxy');
 
 const methodMap = {
 	get: ['get'],
@@ -35,6 +38,17 @@ module.exports = function getRouter(map) {
 
 		for(let method of methods) {
 			// 注册路由
+			
+			if(typeof func === 'string') {
+				// 代理到其他服务器
+				let host = func;
+				func = function*(next) {
+					proxy(this.req, this.res, {
+	          target: urlLib.resolve(host, this.originalUrl)
+	        });
+				};
+			}
+
 			router[method](realUrl, function*(next) {
 				let method = this.method.toUpperCase();
 	      let url = this.url;
