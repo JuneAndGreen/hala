@@ -25,25 +25,28 @@ class Hala {
     let configFilePath;
 
     // 传配置文件
-    if(!config || typeof config === 'string') {
-      try {
-        if(typeof config === 'string') {
-          // 传配置文件路径
-          configFilePath = config;
-        } else {
-          // 如果没有配置项，直接找当前目录下的hala.js
-          configFilePath = path.join(process.cwd(), './hala.js');
-        }
+    try {
+      if(typeof config === 'string') {
+        // 传配置文件路径
+        configFilePath = config;
+      } else if(config && typeof config.config === 'string') {
+        // 取配置项中的config字段作为配置文件路径，用于命令行参数
+        configFilePath = config.config;
+      } else {
+        // 如果没有配置项，直接找当前目录下的hala.js
+        configFilePath = path.join(process.cwd(), './hala.js');
+      } 
 
-        config = require(configFilePath);
-        delete require.cache[require.resolve(configFilePath)]; // 删掉配置缓存
+      let readConfig = require(configFilePath);
+      config = typeof config === 'object' ? config : {};
+      config = Object.assign(config, readConfig);
+      delete require.cache[require.resolve(configFilePath)]; // 删掉配置缓存
 
-        this.watch(configFilePath); // 监听配置文件的变化
-      } catch(err) {
-        console.log(err.stack);
-        console.error('缺少相关配置文件，请确保当前目录下有hala.js文件，或者通过参数传入配置文件路径');
-        process.exit(1);
-      }
+      this.watch(configFilePath); // 监听配置文件的变化
+    } catch(err) {
+      console.log(err.stack);
+      console.error('缺少相关配置文件，请确保当前目录下有hala.js文件，或者通过参数传入配置文件路径');
+      process.exit(1);
     }
 
     this.server = new Server(config);
