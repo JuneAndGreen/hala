@@ -6,7 +6,6 @@ module.exports = {
 	webroot: path.join(__dirname, './demo/'),
 	viewroot: './views',
 	routes: {
-		'GET /cgi/admin/get_code': 'http://10.19.88.77:3000/',
 		'GET /api/account/authority/get': function*(next) {
 			this.response.body = {
 				"message": "5MddQ",
