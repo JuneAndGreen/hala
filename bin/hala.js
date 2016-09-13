@@ -30,8 +30,13 @@ commander
 	.parse(process.argv)
 
 	.once('done', () => {
-		let options = commander.config ? commander.config : commander;
-		options.launch = !options.noLaunch;
+		let options;
+		if(commander.config) {
+			options = commander.config;
+		} else {
+			options = commander;
+			options.launch = !options.noLaunch;
+		}
 		new Hala(options);
 	});
 
