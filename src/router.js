@@ -6,7 +6,6 @@
 */
 
 const Router = require('koa-router');
-const urlLib = require('url');
 
 const proxy = require('./proxy');
 
@@ -43,8 +42,9 @@ module.exports = function getRouter(map) {
 				// 代理到其他服务器
 				let host = func;
 				func = function*(next) {
+					this.respond = false;
 					proxy(this.req, this.res, {
-	          target: urlLib.resolve(host, this.originalUrl)
+	          target: host
 	        });
 				};
 			}

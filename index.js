@@ -44,9 +44,7 @@ class Hala {
 
       this.watch(configFilePath); // 监听配置文件的变化
     } catch(err) {
-      console.log(err.stack);
-      console.error('缺少相关配置文件，请确保当前目录下有hala.js文件，或者通过参数传入配置文件路径');
-      process.exit(1);
+      // ignore
     }
 
     this.server = new Server(config);

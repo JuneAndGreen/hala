@@ -20,6 +20,7 @@ const _ = require('./util');
 
 class Server {
   constructor(config) {
+    config = config || {};
     this.connection = [];
 
     this.config(config);
