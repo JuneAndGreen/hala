@@ -3,6 +3,7 @@
 const path = require('path');
 
 module.exports = {
+	port: 8081,
 	webroot: path.join(__dirname, './demo/'),
 	viewroot: './views',
 	routes: {

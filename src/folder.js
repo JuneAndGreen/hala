@@ -8,19 +8,25 @@
 const fs = require('fs');
 const path = require('path');
 const ejs = require('ejs');
+const mime = require('mime');
 
 const _ = require('./util');
 
 // 预览文件模板
-const tpl = fs.readFileSync(path.join(__dirname, './folder.html'), 'utf8');
+const tpl = fs.readFileSync(path.join(__dirname, './tpl/folder.html'), 'utf8');
 const render = ejs.compile(tpl);
+
+// 预览图片模板
+const imgTpl = fs.readFileSync(path.join(__dirname, './tpl/imger.html'), 'utf8');
+const imgRender = ejs.compile(imgTpl);
 
 module.exports = function(obj) {
   return function*(next) {
     let webroot = obj.webroot;
     let port = obj.port;
 
-    let pathname = this.url;
+    let pathname = this.path;
+    let query = this.query;
     let wholePath = path.join(webroot, pathname);
     let prevpath;
 
@@ -31,11 +37,14 @@ module.exports = function(obj) {
 
     let stat = fs.statSync(wholePath);
     if(!stat.isDirectory()) {
+      // 非文件夹
       yield next;
     } else {
       // 访问文件夹
       console.log(`访问了文件夹：${wholePath}`);
       let files = [];
+      let images = [];
+      // let video = [];
       let folders = [];
 
       let subs = fs.readdirSync(wholePath);
@@ -45,6 +54,15 @@ module.exports = function(obj) {
         if(fs.statSync(filePath).isFile()) {
           // 文件
           files.push(file);
+
+          if(/image/.test(mime.lookup(file))) {
+            let imgPath = pathname[pathname.length - 1] === '/' ? `${pathname}${file}` : `${pathname}/${file}`
+            images.push({
+              name: file,
+              path: imgPath
+            });
+            console.log(pathname, file)
+          }
         }
         if(fs.statSync(filePath).isDirectory()) {
           // 文件夹
@@ -52,19 +70,36 @@ module.exports = function(obj) {
         }
       });
 
-      let locals = {
-        join: path.join,
-        files,
-        folders,
-        prevpath,
-        pathname,
-        port,
-        wholePath,
-        ips: _.getIPs(),
-        qrcode: _.getQRCode(_.getFullUrl(this), 2).createImgTag(4)
-      };
-      // 渲染页面
-      let body = render(locals);
+      let body = '';
+      if(query&&query.hasOwnProperty('img')) {
+        // 图片预览
+        let locals = {
+          join: path.join,
+          folders,
+          images,
+          prevpath,
+          pathname,
+          port,
+          wholePath
+        };
+        // 渲染页面
+        body = imgRender(locals);
+      } else {
+        let locals = {
+          join: path.join,
+          files,
+          folders,
+          prevpath,
+          pathname,
+          port,
+          wholePath,
+          ips: _.getIPs(),
+          qrcode: _.getQRCode(_.getFullUrl(this), 2).createImgTag(4)
+        };
+        // 渲染页面
+        body = render(locals);
+      }
+
       // 返回页面
       this.set('Content-Type', 'text/html');
       this.set('Content-Length', Buffer.byteLength(body));

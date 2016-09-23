@@ -61,6 +61,18 @@
       font-family: "微软雅黑", "microsoft yahei", arial, simsun;
     }
 
+    .clearfix {
+      zoom: 1;
+    }
+    .clearfix:after {
+      display: block;
+      clear: both;
+      visibility: hidden;
+      height: 0;
+      overflow: hidden;
+      content: ".";
+    }
+
     /* 当前目录提示信息 */
     .current {
       padding: 20px 40px;
@@ -68,6 +80,22 @@
       background: #eee;
       font-size: 30px;
       color: #555;
+    }
+
+    .scan_btns {
+      position: relative;
+      margin-top: 15px;
+    }
+    .scan_btn {
+      display: block;
+      float: left;
+      margin-right: 20px;
+      padding: 5px 15px;
+      background: #16a085;
+      color: #fff;
+      font-size: 18px;
+      font-weight: normal;
+      cursor: pointer;
     }
 
     /* 文件和文件夹列表 */
@@ -187,7 +215,13 @@
   </style>
 </head>
 <body>
-  <h2 class="current">当前目录：<strong id="dir"><%= pathname %></strong></h2>
+  <h2 class="current">当前目录：
+    <strong id="dir"><%= pathname %></strong>
+    <div class="scan_btns clearfix">
+      <a class="scan_btn scan_image" href="?img">图片浏览</a>
+      <!-- <a class="scan_btn scan_video" href="?video">视频浏览</a> -->
+    </div>
+  </h2>
   <ul class="m-folder">
     <% if(prevpath) { %>
       <li><a href="<%= join('/', prevpath) %>" class="prevpath" title="回到上一级目录"><i class="icon"></i>回到上一级目录</a></li>

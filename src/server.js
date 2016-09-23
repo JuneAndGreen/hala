@@ -114,6 +114,9 @@ class Server {
 
     this.__reseting = false; // 重置完成
 
+    // 异常捕获
+    this.server.on('error', (err, ctx) => this.onerror(err, ctx));
+
     this.server.on('listening', () => {
       let url = `http://localhost:${this.port}`;
       console.log(`代理服务器已成功启动，当前根路径为 ${url}`);

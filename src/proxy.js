@@ -6,14 +6,9 @@ const proxy = httpProxy.createProxyServer({});
 
 proxy.on('error', function(err, req, res) {
   // 处理代理错误信息
-  if(err) console.log(err.stack);
-
-  if(err && err.code === 'ECONNRESET') return res.send('end');
-  else {
-    res.writeHead(500, {
-      'Content-Type': 'text/plain'
-    });
-    res.end('代理请求错误，url为' + req.url);
+  if(err) {
+    console.log(`代理请求错误，url为${req.url}`);
+    console.log(err.stack);
   }
 });
 
