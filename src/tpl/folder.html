@@ -104,17 +104,19 @@
     }
     .prevpath, .folder, .file {
       position: relative;
-      display: block;
+    }
+    .prevpath a, .folder a, .file a {
+      position: relative;
       padding-left: 30px;
       height: 30px;
       line-height: 30px;
       color: #16a085;
     }
-    .prevpath:hover, .folder:hover, .file:hover {
+    .prevpath a:hover, .folder a:hover, .file a:hover {
       color: #2a8371;
       text-decoration: underline;
     }
-    .prevpath:visited, .folder:visited, .file:visited {
+    .prevpath a:visited, .folder a:visited, .file a:visited {
       color: #16a085;
     }
     .prevpath .icon, .folder .icon, .file .icon {
@@ -218,22 +220,27 @@
   <h2 class="current">当前目录：
     <strong id="dir"><%= pathname %></strong>
     <div class="scan_btns clearfix">
-      <a class="scan_btn scan_image" href="?img">图片浏览</a>
+      <a class="scan_btn scan_image" href="<%= pathname %>?img">图片浏览</a>
       <!-- <a class="scan_btn scan_video" href="?video">视频浏览</a> -->
     </div>
   </h2>
   <ul class="m-folder">
     <% if(prevpath) { %>
-      <li><a href="<%= join('/', prevpath) %>" class="prevpath" title="回到上一级目录"><i class="icon"></i>回到上一级目录</a></li>
+      <li class="prevpath">
+        <i class="icon"></i>
+        <a href="<%= join('/', prevpath) %>" title="回到上一级目录">回到上一级目录</a>
+      </li>
     <% } %>
     <% folders.forEach(function(item) { %>
-      <li>
-        <a href="<%= join(pathname, item) %>" class="folder"><i class="icon"></i><%= item %></a>
+      <li class="folder">
+        <i class="icon"></i>
+        <a href="<%= join(pathname, item) %>"><%= item %></a>
       </li>
     <% }); %>
     <% files.forEach(function(item) { %>
-      <li>
-        <a href="<%= join(pathname, item) %>" class="file" ><i class="icon"></i><%= item %></a>
+      <li class="file">
+        <i class="icon"></i>
+        <a href="<%= join(pathname, item) %>"><%= item %></a>
       </li>
     <% }); %>
   </ul>

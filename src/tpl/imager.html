@@ -1,0 +1,305 @@
+<% var favicon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABMLAAATCwAAAAAAAAAAAAAAAAAAAAAAAP///wD///8E////Pf///5n6+vrR9fX14/X19eP7+/vS////mf///zz///8E////AAAAAAAAAAAA////AP///wD///8S////hO3t7dK8vLy4f39/klpaWoJcXFyCgoKClMDAwLvv7+/U////hP///xL///8A////AP///wD///8S/f39otHR0clPT09+AQEBZAAAAGMAAABkAAAAZAAAAGMCAgJkV1dXgdfX18/+/v6j////Ev///wD///8D////hNDQ0MgmJiZvBgYGZjo6OnYpKSlxAAAAZgAAAGYqKipxOjo6dgUFBWYvLy9y19fXz////4X///8D////Pevr689MTEx8AAAAYzQ0NHTk5OTcurq6tgAAAGUAAABlvb29uOPj49swMDBzAAAAY1paWoHv7+/T////Pf///5i2trayAAAAZAAAAGU6Ojp28vLy7MjIyMEAAABlAAAAZcrKysPx8fHrNjY2dQAAAGUAAABlwMDAuv///5n4+PjNdXV1jQAAAGQAAABlOjo6dvLy8u3Jycm/AAAAYgAAAGPLy8vC8fHx6zY2NnUAAABlAAAAZIODg5T7+/vR8fHx3k1NTX0AAABlAAAAZTo6Onbx8fHr5OTk3KWlpaelpaWn5eXl3fDw8Oo2NjZ1AAAAZQAAAGRdXV2C9fX14/Hx8d1MTEx8AAAAZQAAAGU6Ojp28PDw6vn5+ffu7u7o7u7u6Pr6+vfv7+/pNjY2dQAAAGUAAABkW1tbgvX19eL4+PjNcXFxiwAAAGQAAABlOjo6dvHx8ezOzs7GMDAwczAwMHPR0dHI8PDw6zY2NnUAAABlAAAAZICAgJL7+/vQ////l7Gxsa8AAABkAAAAZTo6Onby8vLsyMjIwAAAAGQAAABky8vLwvHx8es2NjZ1AAAAZQAAAGW8vLy3////mP///z7o6OjMREREeQAAAGM5OTl28PDw6sbGxr8AAABlAAAAZcnJycHv7+/pNTU1dQAAAGNRUVF+7e3t0f///z3///8D////hMrKysMdHR1tEhISaXx8fJBcXFyCAAAAZgAAAGZeXl6De3t7kBAQEGklJSVv0dHRyf///4X///8D////AP///xL8/PyhysrKw0FBQXkAAABiAAAAYgAAAGUAAABlAAAAYgAAAGJKSkp80NDQyP39/aL///8S////AP///wD///8A////Ev7+/oTo6OjNsbGxsHBwcItLS0t8TExMfXNzc421tbWz6+vr0P///4T///8S////AP///wAAAAAAAAAAAP///wD///8E////Pf7+/pj4+PjN8fHx3vHx8d74+PjO////mP///z3///8E////AAAAAAAAAAAA4AcAAMADAACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAADAAwAA4AcAAA=='; %>
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <title>HALA 图片浏览(<%= wholePath %>)</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" user-scalable="no">
+  <link rel="shortcut icon" href="<%= favicon %>" type="image/x-icon" />
+
+  <style type="text/css">
+    /* 重置 */
+    body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, p, blockquote, th, td {
+      margin: 0;
+      padding: 0;
+    }
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+    caption, th {
+      text-align: left;
+    }
+    fieldset, img, a img, iframe, html, body {
+      border: 0;
+    }
+    li{
+      list-style: none;
+    }
+    address, caption, cite, code, dfn, em, strong, th, var {
+      font-style: normal;
+      font-weight: normal;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-size: 100%;
+      font-weight: normal;
+    }
+    [hidefocus] {
+      outline: 0;
+    }
+    body {
+      word-wrap: break-word;
+      font: 18/normal "微软雅黑", arial, simsun;
+      color: #333;
+      background: #fff;
+    }
+    h1, h2, h3, h4, h5, h6, em, strong, b {
+      font-weight: bold;
+    }
+    a, button {
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* 全局 */
+    html, body {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      overflow-y: hidden;
+      font-family: "微软雅黑", "microsoft yahei", arial, simsun;
+    }
+
+    .clearfix {
+      zoom: 1;
+    }
+    .clearfix:after {
+      display: block;
+      clear: both;
+      visibility: hidden;
+      height: 0;
+      overflow: hidden;
+      content: ".";
+    }
+
+    .hide {
+      display: none;
+    }
+
+    /* 头部 */
+    .title {
+      padding: 10px 20px;
+      font-size: 20px;
+      line-height: 1;
+      color: #555;
+      font-weight: bold;
+    }
+
+    /* 内容 */
+    .content {
+      position: absolute;
+      top: 41px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #000;
+      z-index: -1;
+      opacity: .5;
+    }
+
+    .tooltip {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+      margin-left: -200px;
+      margin-top: -50px;
+
+      width: 400px;
+      height: 100px;
+      line-height: 100px;
+      font-size: 20px;
+      color: #222;
+      text-align: center;
+    }
+
+    .imgcnt {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      overflow: auto;
+    }
+
+    .imgcnt img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+      transform: translate(-50%, -50%);
+
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    /* 移动端 */
+    .m {
+
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="title">嘻嘻嘻</div>
+  </div>
+  <div id="imgcnt" class="content">
+    <div class="bg"></div>
+
+    <% if(!images.length) { %>
+    <div class="tooltip">当前目录下没有图片可浏览</div>
+    <% } else { %>
+    <div class="imgcnt">
+      <% images.forEach(function(item, index) { %>
+      <img src="<%= item.path %>" class="<% if(index!==0) { %>hide<% } %>">
+      <% }); %>
+    </div>
+    <% } %>
+
+  </div>
+  <div class="bottom"></div>
+
+  <script type="text/javascript">
+    var ua = navigator.userAgent;
+    var isSymbian = /(?:SymbianOS)/.test(ua) || /(?:Windows Phone)/.test(ua);
+    var isAndroid = /(?:Android)/.test(ua);
+    var isTablet = /(?:iPad|PlayBook)/.test(ua) || (isAndroid && !/(?:Mobile)/.test(ua)) || (/(?:Firefox)/.test(ua) && /(?:Tablet)/.test(ua));
+    var isPhone = /(?:iPhone)/.test(ua) && !isTablet;
+
+    var isPc = !isPhone && !isAndroid && !isSymbian;
+
+    /**
+     * 事件添加器
+     */
+    function addEvent(elem, event, callback) {
+      if(window.addEventListener) {
+        elem.addEventListener(event, callback, false);
+      } else {
+        elem.attachEvent('on' + event, callback);
+      }
+    }
+
+    /**
+     * 获取某个dom节点的类列表
+     */
+    function hasClass(elem, className) {
+      var classList = elem.className.split(' ');
+      for(var i=0,len=classList.length; i<len; i++) {
+        if((+classList[i]).trim() === className) return true;
+      }
+
+      return false;
+    }
+
+    /**
+     * 获取当前显示的图片
+     */
+    var imgcnt = document.getElementById('imgcnt');
+    var imgs = imgcnt.getElementsByTag('img');
+    var imgsLen = imgs.length;
+    function getCurrent() {
+      for(var i=imgsLen-1; i>=0; i--) {
+        if(!hasClass(imgs[i], 'hide')) break;
+      }
+
+      if(i < imgsLen) {
+        return {
+          elem: imgs[i],
+          index: i
+        };
+      } else {
+        return null;
+      }
+    }
+
+    /**
+     * 翻页
+     */
+    function toPage(arrow) {
+      var index = 1;
+      var elem = imgs[index];
+
+      var obj = getCurrent();
+      if(obj) {
+        index = obj.index;
+        elem = obj.elem;
+      }
+
+      switch(arrow) {
+        case 'up':
+          // 上一页
+          
+          break;
+        case 'down':
+          // 下一页
+          
+          break;
+        default: 
+          break;
+      }
+
+    }
+
+    if(!isPc) {
+      // 移动端
+      document.body.className = 'm';
+
+    } else {
+      // pc端
+      var support = 'onwheel' in document.createElement('div') ? 'wheel' // 各个厂商的高版本浏览器都支持 wheel
+        : document.onmousewheel !== undefined ? 'mousewheel' // Webkit 和 IE一定支持 mousewheel
+        : 'MozMousePixelScroll'; // 低版本firefox
+
+      /**
+       * 滚轮事件添加器
+       */
+      var addWheelEvent = function(elem, callback) {
+        addEvent(document, support, support === 'wheel' ? callback : function(evt) {
+          evt = evt || window.event;
+
+          // 生成新的事件对象
+          var event = {
+            originalEvent: evt,
+            target: evt.target || evt.srcElement,
+            type: 'wheel',
+            deltaMode: evt.type == 'MozMousePixelScroll' ? 0 : 1,
+            deltaX: 0,
+            deltaZ: 0,
+            preventDefault: function() {
+              return evt.preventDefault ? evt.preventDefault() : evt.returnValue = false;
+            }
+          };
+
+          // 修复偏移值
+          if(support === 'mousewheel') {
+            event.deltaY = - 1/40 * evt.wheelDelta;
+            evt.wheelDeltaX && ( event.deltaX = - 1/40 * evt.wheelDeltaX );
+          } else {
+            event.deltaY = evt.detail;
+          }
+
+          return callback(event);
+        });
+      };
+
+      addWheelEvent(document, function(evt) {
+        if(evt.deltaY > 0) {
+          // 下一页
+          console.log('down');
+        } else {
+          // 上一页
+          console.log('up');
+        }
+      });
+    }
+
+  </script>
+</body>
+</html>

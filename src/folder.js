@@ -17,7 +17,7 @@ const tpl = fs.readFileSync(path.join(__dirname, './tpl/folder.html'), 'utf8');
 const render = ejs.compile(tpl);
 
 // 预览图片模板
-const imgTpl = fs.readFileSync(path.join(__dirname, './tpl/imger.html'), 'utf8');
+const imgTpl = fs.readFileSync(path.join(__dirname, './tpl/imager.html'), 'utf8');
 const imgRender = ejs.compile(imgTpl);
 
 module.exports = function(obj) {
@@ -75,7 +75,6 @@ module.exports = function(obj) {
         // 图片预览
         let locals = {
           join: path.join,
-          folders,
           images,
           prevpath,
           pathname,
