@@ -60,6 +60,7 @@
       font-family: "微软雅黑", "microsoft yahei", arial, simsun;
     }
 
+    /* 清除浮动 */
     .clearfix {
       zoom: 1;
     }
@@ -71,25 +72,60 @@
       overflow: hidden;
       content: ".";
     }
+    /* 省略号 */
+    .ellipsis {
+      overflow: hidden;
+      word-wrap: normal;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 
     .hide {
       display: none;
     }
 
     /* 头部 */
+    .top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+
+      height: 60px;
+      background: #fff;
+      z-index: 100;
+    }
     .title {
-      padding: 10px 20px;
+      padding: 20px 110px;
       font-size: 20px;
       line-height: 1;
       color: #555;
       font-weight: bold;
+      text-align: center;
+    }
+    .back, .batch {
+      padding: 10px 20px;
+      position: absolute;
+      top: 10px;
+      font-size: 20px;
+      line-height: 1;
+
+      background: #16a085;
+      color: #fff;
+      cursor: pointer;
+    }
+    .back {
+      left: 20px;
+    }
+    .batch {
+      right: 20px;
     }
 
     /* 内容 */
     .content {
       position: absolute;
-      top: 41px;
-      bottom: 0;
+      top: 60px;
+      bottom: 60px;
       left: 0;
       right: 0;
     }
@@ -100,12 +136,11 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: #000;
+      background: #909090;
       z-index: -1;
-      opacity: .5;
     }
 
-    .tooltip {
+    .tip {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -134,37 +169,126 @@
       left: 50%;
 
       transform: translate(-50%, -50%);
+      -webkit-transform: translate(-50%, -50%);
 
       max-width: 100%;
       max-height: 100%;
+      cursor: move;
+    }
+
+    /* 底部 */
+    .bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      height: 60px;
+      background: #fff;
+      z-index: 100;
+    }
+    .opr {
+      float: left;
+      margin-left: 20px;
+      margin-top: 10px;
+
+      padding: 10px 20px;
+      font-size: 20px;
+      line-height: 1;
+
+      background: #16a085;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* 提示语 */
+    .toast {
+      padding: 20px 30px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      max-width: 80%;
+
+      transform: translate(-50%, -50%);
+      -webkit-transform: translate(-50%, -50%);
+
+      color: #fff;
+      box-sizing: border-box;
+    }
+    .toast .bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      background: #000;
+      opacity: .7;
+      -webkit-opacity: .7;
+      z-index: 1;
+      border-radius: 5px;
+    }
+    .toast .text {
+      position: relative;
+      z-index: 2;
     }
 
     /* 移动端 */
-    .m {
-
+    .m .top, .m .bottom {
+      transition: all .5s ease;
+      -webkit-transition: all .5s ease;
+    }
+    .m.mhide .top {
+      top: -60px;
+    }
+    .m.mhide .bottom {
+      bottom: -60px;
+    }
+    .m .content{
+      top: 0;
+      bottom: 0;
     }
     
   </style>
 </head>
 <body>
   <div class="top">
-    <div class="title">嘻嘻嘻</div>
+    <div id="back" class="back">返回</div>
+    <div id="title" class="title ellipsis"></div>
+    <div id="batch" class="batch">批量</div>
   </div>
   <div id="imgcnt" class="content">
     <div class="bg"></div>
 
     <% if(!images.length) { %>
-    <div class="tooltip">当前目录下没有图片可浏览</div>
+    <div class="tip">当前目录下没有图片可浏览</div>
     <% } else { %>
     <div class="imgcnt">
       <% images.forEach(function(item, index) { %>
-      <img src="<%= item.path %>" class="<% if(index!==0) { %>hide<% } %>">
+      <img src="<%= item.path %>" title="<%= item.name %>" alt="<%= item.name %>" class="<% if(index!==0) { %>hide<% } %>">
       <% }); %>
     </div>
     <% } %>
 
   </div>
-  <div class="bottom"></div>
+  <div class="bottom">
+    <div class="clearfix">
+      <div id="prev" class="opr">上一页</div>
+      <div id="next" class="opr">下一页</div>
+      <div id="bigger" class="opr">放大</div>
+      <div id="smaller" class="opr">缩小</div>
+      <div id="left_rotate" class="opr">左旋</div>
+      <div id="right_rotate" class="opr">右旋</div>
+      <div id="overturn" class="opr">翻转</div>
+      <div id="reset" class="opr">重置</div>
+      <div id="adjust" class="opr">调整大小</div>
+    </div>
+  </div>
+
+  <div class="toast hide">
+    <div class="bg"></div>
+    <div id="toast" class="text"></div>
+  </div>
 
   <script type="text/javascript">
     var ua = navigator.userAgent;
@@ -174,6 +298,17 @@
     var isPhone = /(?:iPhone)/.test(ua) && !isTablet;
 
     var isPc = !isPhone && !isAndroid && !isSymbian;
+
+    if(!isPc) {
+      // 增加移动端手势事件
+      (function(){function f(a){return Math.sqrt(a.x*a.x+a.y*a.y)}var h=function(a,b){a.addEventListener("touchstart",this.st.bind(this),!1);a.addEventListener("touchmove",this.mv.bind(this),!1);a.addEventListener("touchend",this.end.bind(this),!1);a.addEventListener("touchcancel",this.cancel.bind(this),!1);this.preV={x:null,y:null};this.psl=null;this.scale=1;this.idt=!1;this.ro=b.rotate||function(){};this.ts=b.touchStart||function(){};this.mps=b.multipointStart||
+      function(){};this.mpe=b.multipointEnd||function(){};this.p=b.pinch||function(){};this.swipe=b.swipe||function(){};this.tap=b.tap||function(){};this.dt=b.doubleTap||function(){};this.lt=b.longTap||function(){};this.sit=b.singleTap||function(){};this.pem=b.pressMove||function(){};this.tm=b.touchMove||function(){};this.te=b.touchEnd||function(){};this.toc=b.touchCancel||function(){};this.x1=this.x2=this.y1=this.y2=this.swt=this.ltt=
+      this.tot=this.tat=this.now=this.last=this.delta=null;this.ptp={x:null,y:null}};h.prototype={st:function(a){if(a.touches){this.now=Date.now();this.x1=a.touches[0].pageX;this.y1=a.touches[0].pageY;this.delta=this.now-(this.last||this.now);this.ts(a);null!==this.ptp.x&&(this.idt=0<this.delta&&250>=this.delta&&30>Math.abs(this.ptp.x-this.x1)&&30>Math.abs(this.ptp.y-this.y1));this.ptp.x=this.x1;this.ptp.y=
+      this.y1;this.last=this.now;var b=this.preV;if(1<a.touches.length){this._clt();var c=a.touches[1].pageY-this.y1;b.x=a.touches[1].pageX-this.x1;b.y=c;this.psl=f(b);this.mps(a)}this.ltt=setTimeout(function(){this.lt(a)}.bind(this),750)}},mv:function(a){if(a.touches){var b=this.preV,c=a.touches.length,e=a.touches[0].pageX,g=a.touches[0].pageY;this.idt=!1;if(1<c){c={x:a.touches[1].pageX-e,y:a.touches[1].pageY-g};if(null!==b.x){0<this.psl&&
+      (a.scale=f(c)/this.psl,this.p(a));var d;d=f(c)*f(b);0===d?d=0:(d=(c.x*b.x+c.y*b.y)/d,1<d&&(d=1),d=Math.acos(d));0<c.x*b.y-b.x*c.y&&(d*=-1);a.angle=180*d/Math.PI;this.ro(a)}b.x=c.x;b.y=c.y}else null!==this.x2?(a.deltaX=e-this.x2,a.deltaY=g-this.y2):(a.deltaX=0,a.deltaY=0),this.pem(a);this.tm(a);this._clt();this.x2=e;this.y2=g;1<a.touches.length&&(this._clt(),a.preventDefault())}},end:function(a){if(a.changedTouches){this._clt();var b=this;
+      2>a.touches.length&&this.mpe(a);this.te(a);this.x2&&30<Math.abs(this.x1-this.x2)||this.y2&&30<Math.abs(this.preV.y-this.y2)?(a.direction=this._sd(this.x1,this.x2,this.y1,this.y2),this.swt=setTimeout(function(){b.swipe(a)},0)):this.tat=setTimeout(function(){b.tap(a);b.idt?(b.dt(a),clearTimeout(b.tot),b.idt=!1):b.tot=setTimeout(function(){b.sit(a)},250)},0);this.preV.x=0;this.preV.y=0;this.scale=1;this.x1=this.x2=
+      this.y1=this.y2=this.psl=null}},cancel:function(a){clearTimeout(this.tot);clearTimeout(this.tat);clearTimeout(this.ltt);clearTimeout(this.swt);this.toc(a)},_clt:function(){clearTimeout(this.ltt)},_sd:function(a,b,c,e){return Math.abs(a-b)>=Math.abs(c-e)?0<a-b?"Left":"Right":0<c-e?"Up":"Down"}};window.T=h})();
+    }
 
     /**
      * 事件添加器
@@ -192,18 +327,75 @@
     function hasClass(elem, className) {
       var classList = elem.className.split(' ');
       for(var i=0,len=classList.length; i<len; i++) {
-        if((+classList[i]).trim() === className) return true;
+        if(classList[i].trim() === className) return true;
       }
 
       return false;
     }
 
     /**
+     * 增加某个dom节点的类
+     */
+    function addClass(elem, className) {
+      if(!hasClass(elem, className)) {
+        elem.className += (' ' + className);
+      }
+    }
+
+    /**
+     * 删除某个dom节点的类
+     */
+    function removeClass(elem, className) {
+      var classList = elem.className.split(' ');
+      for(var i=classList.length-1; i>=0; i--) {
+        if(classList[i].trim() === className) classList.splice(i, 1);
+      }
+
+      elem.className = classList.join(' ');
+    }
+
+
+
+    var toast = document.getElementById('toast');
+    var toastCnt = toast.parentNode;
+    var imgcnt = document.getElementById('imgcnt');
+    var imgs = imgcnt.getElementsByTagName('img');
+    var title = document.getElementById('title');
+    var imgsLen = imgs.length;
+
+    var oprs = {
+      prev: document.getElementById('prev'),
+      next: document.getElementById('next'),
+      bigger: document.getElementById('bigger'),
+      smaller: document.getElementById('smaller'),
+      left_rotate: document.getElementById('left_rotate'),
+      right_rotate: document.getElementById('right_rotate'),
+      overturn: document.getElementById('overturn'),
+      reset: document.getElementById('reset'),
+      adjust: document.getElementById('adjust')
+    };
+
+    if(imgsLen) {
+      // 初始化第一个图片
+      title.innerHTML = imgs[0].title;
+      title.title = imgs[0].title;
+    }
+
+    /**
+     * 显示提示
+     */
+    function showToast(text) {
+      toast.innerHTML = text || '';
+      removeClass(toastCnt, 'hide');
+
+      setTimeout(function() {
+        addClass(toastCnt, 'hide');
+      }, 1000);
+    }
+
+    /**
      * 获取当前显示的图片
      */
-    var imgcnt = document.getElementById('imgcnt');
-    var imgs = imgcnt.getElementsByTag('img');
-    var imgsLen = imgs.length;
     function getCurrent() {
       for(var i=imgsLen-1; i>=0; i--) {
         if(!hasClass(imgs[i], 'hide')) break;
@@ -223,7 +415,7 @@
      * 翻页
      */
     function toPage(arrow) {
-      var index = 1;
+      var index = 0;
       var elem = imgs[index];
 
       var obj = getCurrent();
@@ -232,24 +424,77 @@
         elem = obj.elem;
       }
 
+      var nIndex, nElem;
       switch(arrow) {
         case 'up':
           // 上一页
-          
+          nIndex = index <= 0 ? imgsLen - 1 : index - 1;
           break;
         case 'down':
           // 下一页
-          
+          nIndex = index >= imgsLen - 1 ? 0 : index + 1;
           break;
         default: 
           break;
       }
+      nElem = imgs[nIndex];
 
+      addClass(elem, 'hide');
+      removeClass(nElem, 'hide');
+      title.innerHTML = nElem.title;
+      title.title = nElem.title;
     }
+
+    /**
+     * 展示头尾
+     */
+    function showTopAndBottom(cb) {
+      removeClass(document.body, 'mhide');
+
+      setTimeout(function() {
+        addClass(document.body, 'mhide');
+        cb&&(typeof cb === 'function')&&cb();
+      }, 2000);
+    }
+    showTopAndBottom();
 
     if(!isPc) {
       // 移动端
-      document.body.className = 'm';
+      addClass(document.body, 'm');
+
+      new T(imgcnt, {
+        tap: function() {
+          // 按图片显示头尾
+          showTopAndBottom();
+        },
+        swipe: function(evt) {
+          if(evt.direction.toLowerCase() === 'left') {
+            // 下一页
+            toPage('down');
+          } else if(evt.direction.toLowerCase() === 'right') {
+            // 上一页
+            toPage('up');
+          }
+        }
+      });
+
+      new T(title, {
+        tap: function(evt) {
+          // 按标题展示标题内容
+          var text = title.innerHTML;
+          showToast(text);
+        }
+      });
+
+      new T(oprs['prev'], {tap: function() {toPage('up');}});
+      new T(oprs['next'], {tap: function() {toPage('down');}});
+      // new T(oprs['bigger'], {tap: function() {toPage('up');}});
+      // new T(oprs['smaller'], {tap: function() {toPage('up');}});
+      // new T(oprs['left_rotate'], {tap: function() {toPage('up');}});
+      // new T(oprs['right_rotate'], {tap: function() {toPage('up');}});
+      // new T(oprs['overturn'], {tap: function() {toPage('up');}});
+      // new T(oprs['reset'], {tap: function() {toPage('up');}});
+      // new T(oprs['adjust'], {tap: function() {toPage('up');}});
 
     } else {
       // pc端
@@ -292,12 +537,32 @@
       addWheelEvent(document, function(evt) {
         if(evt.deltaY > 0) {
           // 下一页
-          console.log('down');
+          toPage('down');
         } else {
           // 上一页
-          console.log('up');
+          toPage('up');
         }
       });
+
+      // 添加返回事件
+      addEvent(document.getElementById('back'), 'click', back);
+
+      addEvent(oprs['prev'], 'click', function() {toPage('up');});
+      addEvent(oprs['next'], 'click', function() {toPage('down');});
+      // addEvent(oprs['bigger'], 'click', function() {toPage('up');});
+      // addEvent(oprs['smaller'], 'click', function() {toPage('up');});
+      // addEvent(oprs['left_rotate'], 'click', function() {toPage('up');});
+      // addEvent(oprs['right_rotate'], 'click', function() {toPage('up');});
+      // addEvent(oprs['overturn'], 'click', function() {toPage('up');});
+      // addEvent(oprs['reset'], 'click', function() {toPage('up');});
+      // addEvent(oprs['adjust'], 'click', function() {toPage('up');});
+    }
+
+    /**
+     * 返回
+     */
+    function back() {
+      location.href = '<%= pathname %>';
     }
 
   </script>
