@@ -96,14 +96,15 @@
       z-index: 100;
     }
     .title {
-      padding: 20px 110px;
+      padding: 20px;
+      padding-left: 110px;
       font-size: 20px;
       line-height: 1;
       color: #555;
       font-weight: bold;
       text-align: center;
     }
-    .back, .batch {
+    .back {
       padding: 10px 20px;
       position: absolute;
       top: 10px;
@@ -116,9 +117,6 @@
     }
     .back {
       left: 20px;
-    }
-    .batch {
-      right: 20px;
     }
 
     /* 内容 */
@@ -168,8 +166,10 @@
       top: 50%;
       left: 50%;
 
-      transform: translate(-50%, -50%);
-      -webkit-transform: translate(-50%, -50%);
+      -webkit-transform: translate3d(-50%, -50%, 0);
+      -moz-transform: translate3d(-50%, -50%, 0);
+      -o-transform: translate3d(-50%, -50%, 0);
+      transform: translate3d(-50%, -50%, 0);
 
       max-width: 100%;
       max-height: 100%;
@@ -209,8 +209,10 @@
       left: 50%;
       max-width: 80%;
 
-      transform: translate(-50%, -50%);
-      -webkit-transform: translate(-50%, -50%);
+      -webkit-transform: translate3d(-50%, -50%, 0);
+      -moz-transform: translate3d(-50%, -50%, 0);
+      -o-transform: translate3d(-50%, -50%, 0);
+      transform: translate3d(-50%, -50%, 0);
 
       color: #fff;
       box-sizing: border-box;
@@ -255,7 +257,6 @@
   <div class="top">
     <div id="back" class="back">返回</div>
     <div id="title" class="title ellipsis"></div>
-    <div id="batch" class="batch">批量</div>
   </div>
   <div id="imgcnt" class="content">
     <div class="bg"></div>
@@ -281,7 +282,7 @@
       <div id="right_rotate" class="opr">右旋</div>
       <div id="overturn" class="opr">翻转</div>
       <div id="reset" class="opr">重置</div>
-      <div id="adjust" class="opr">调整大小</div>
+      <div id="real" class="opr">实际大小</div>
     </div>
   </div>
 
@@ -372,7 +373,7 @@
       right_rotate: document.getElementById('right_rotate'),
       overturn: document.getElementById('overturn'),
       reset: document.getElementById('reset'),
-      adjust: document.getElementById('adjust')
+      real: document.getElementById('real')
     };
 
     if(imgsLen) {
@@ -439,6 +440,7 @@
       }
       nElem = imgs[nIndex];
 
+      reset();
       addClass(elem, 'hide');
       removeClass(nElem, 'hide');
       title.innerHTML = nElem.title;
@@ -456,11 +458,149 @@
         cb&&(typeof cb === 'function')&&cb();
       }, 2000);
     }
-    showTopAndBottom();
+
+    /**
+     * 获取图片实际大小
+     */
+    function getImgNaturalDimensions(img, cb) {
+      if(img.naturalWidth) {
+        cb(img.naturalWidth, img.naturalHeight);
+      } else { 
+        // IE6/7/8
+        var tmp = new Image();
+        tmp.src = img.src;
+        tmp.onload = function() {
+          cb(tmp.width, tmp.height);
+          tmp.onload = null;
+        };
+      }
+    }
+
+    /**
+     * 放大或缩小
+     */
+    function scale(type) {
+      var obj = getCurrent();
+      var elem = obj.elem;
+
+      var setWAndH = function(elem, toW, toH) {
+        elem.style.maxWidth = toW + 'px';
+        elem.style.width = toW + 'px';
+        elem.style.maxHeight = toH + 'px';
+        elem.style.height = toH + 'px';
+      };
+
+      getImgNaturalDimensions(elem, function(w, h) {
+        var nw = elem.width;
+        var nh = elem.height;
+
+        if(type === 'bigger') {
+          // 放大
+          var maxW = w * 5; // 最大放大到实际的500%
+          var toW = nw * 1.2;
+          var toH = nh * 1.2;
+
+          if(toW < maxW) {
+            setWAndH(elem, toW, toH);
+          }
+        } else if(type === 'smaller') {
+          // 缩小
+          var minW = w / 20; // 最小缩小到实际的5%
+          var toW = nw * 0.8;
+          var toH = nh * 0.8;
+
+          if(toW > minW) {
+            setWAndH(elem, toW, toH);
+          }
+        } else if(type === 'real') {
+          // 实际大小 
+          setWAndH(elem, w, h);
+        }
+      });      
+    }
+
+    var transformPrefix = 'translate3d(-50%, -50%, 0) ';
+    /**
+     * 旋转
+     */
+    var nowRotate = 0;
+    function rotate(type) {
+      var obj = getCurrent();
+      var elem = obj.elem;
+
+      var rotateStr = 'rotate(';
+      if(type === 'right') {
+        // 右旋
+        nowRotate += 90;
+      } else if(type === 'left') {
+        // 左旋
+        nowRotate -= 90;
+      }
+
+      if(nowRotate >= 360) nowRotate -= 360;
+      if(nowRotate <= 360) nowRotate += 360;
+
+      elem.style.webkitTransform  = transformPrefix + rotateStr + nowRotate + 'deg)';
+      elem.style.MozTransform = transformPrefix + rotateStr + nowRotate + 'deg)';
+      elem.style.OTransform = transformPrefix + rotateStr + nowRotate + 'deg)';
+      elem.style.transform = transformPrefix + rotateStr + nowRotate + 'deg)';
+    }
+
+    /**
+     * 翻转
+     */
+    var isOverturn = false;
+    function overturn() {
+      var obj = getCurrent();
+      var elem = obj.elem;
+
+      var setScale = function(elem, str) {
+        elem.parentNode.style.webkitTransform  = str;
+        elem.parentNode.style.MozTransform = str;
+        elem.parentNode.style.OTransform = str;
+        elem.parentNode.style.transform = str;
+      };
+
+      if(isOverturn) {
+        setScale(elem, '');
+      } else {
+        setScale(elem, 'scaleX(-1)');
+      }
+      isOverturn = !isOverturn;
+    }
+
+    /**
+     * 重置
+     */
+    function reset() {
+      var obj = getCurrent();
+      var elem = obj.elem;
+
+      // 恢复放大缩小
+      elem.style.maxWidth = '100%';
+      elem.style.maxHeight = '100%';
+      elem.style.width = 'auto';
+      elem.style.height = 'auto';
+
+      // 恢复旋转
+      nowRotate = 0;
+      elem.style.webkitTransform  = transformPrefix;
+      elem.style.MozTransform = transformPrefix;
+      elem.style.OTransform = transformPrefix;
+      elem.style.transform = transformPrefix;
+
+      // 恢复翻转
+      isOverturn = false;
+      elem.parentNode.style.webkitTransform  = '';
+      elem.parentNode.style.MozTransform = '';
+      elem.parentNode.style.OTransform = '';
+      elem.parentNode.style.transform = '';
+    }
 
     if(!isPc) {
       // 移动端
       addClass(document.body, 'm');
+      showTopAndBottom();
 
       new T(imgcnt, {
         tap: function() {
@@ -488,13 +628,13 @@
 
       new T(oprs['prev'], {tap: function() {toPage('up');}});
       new T(oprs['next'], {tap: function() {toPage('down');}});
-      // new T(oprs['bigger'], {tap: function() {toPage('up');}});
-      // new T(oprs['smaller'], {tap: function() {toPage('up');}});
-      // new T(oprs['left_rotate'], {tap: function() {toPage('up');}});
-      // new T(oprs['right_rotate'], {tap: function() {toPage('up');}});
-      // new T(oprs['overturn'], {tap: function() {toPage('up');}});
-      // new T(oprs['reset'], {tap: function() {toPage('up');}});
-      // new T(oprs['adjust'], {tap: function() {toPage('up');}});
+      new T(oprs['bigger'], {tap: function() {scale('bigger');}});
+      new T(oprs['smaller'], {tap: function() {scale('smaller');}});
+      new T(oprs['left_rotate'], {tap: function() {rotate('left');}});
+      new T(oprs['right_rotate'], {tap: function() {rotate('right');}});
+      new T(oprs['overturn'], {tap: function() {overturn();}});
+      new T(oprs['reset'], {tap: function() {reset();}});
+      new T(oprs['real'], {tap: function() {scale('real');}});
 
     } else {
       // pc端
@@ -549,13 +689,13 @@
 
       addEvent(oprs['prev'], 'click', function() {toPage('up');});
       addEvent(oprs['next'], 'click', function() {toPage('down');});
-      // addEvent(oprs['bigger'], 'click', function() {toPage('up');});
-      // addEvent(oprs['smaller'], 'click', function() {toPage('up');});
-      // addEvent(oprs['left_rotate'], 'click', function() {toPage('up');});
-      // addEvent(oprs['right_rotate'], 'click', function() {toPage('up');});
-      // addEvent(oprs['overturn'], 'click', function() {toPage('up');});
-      // addEvent(oprs['reset'], 'click', function() {toPage('up');});
-      // addEvent(oprs['adjust'], 'click', function() {toPage('up');});
+      addEvent(oprs['bigger'], 'click', function() {scale('bigger');});
+      addEvent(oprs['smaller'], 'click', function() {scale('smaller');});
+      addEvent(oprs['left_rotate'], 'click', function() {rotate('left');});
+      addEvent(oprs['right_rotate'], 'click', function() {rotate('right');});
+      addEvent(oprs['overturn'], 'click', function() {overturn();});
+      addEvent(oprs['reset'], 'click', function() {reset();});
+      addEvent(oprs['real'], 'click', function() {scale('real');});
     }
 
     /**
