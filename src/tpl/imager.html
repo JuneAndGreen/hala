@@ -172,7 +172,6 @@
       transform: translate3d(-50%, -50%, 0);
 
       max-width: 100%;
-      max-height: 100%;
       cursor: move;
     }
 
@@ -250,6 +249,10 @@
       top: 0;
       bottom: 0;
     }
+
+    .m .opr {
+      font-size: 10px;
+    }
     
   </style>
 </head>
@@ -258,13 +261,13 @@
     <div id="back" class="back">返回</div>
     <div id="title" class="title ellipsis"></div>
   </div>
-  <div id="imgcnt" class="content">
+  <div class="content">
     <div class="bg"></div>
 
     <% if(!images.length) { %>
     <div class="tip">当前目录下没有图片可浏览</div>
     <% } else { %>
-    <div class="imgcnt">
+    <div id="imgcnt" class="imgcnt">
       <% images.forEach(function(item, index) { %>
       <img src="<%= item.path %>" title="<%= item.name %>" alt="<%= item.name %>" class="<% if(index!==0) { %>hide<% } %>">
       <% }); %>
@@ -413,6 +416,13 @@
     }
 
     /**
+     * 是否可滚动
+     */
+    function isScroll() {
+      return imgcnt.clientHeight < imgcnt.scrollHeight || imgcnt.clientWidth < imgcnt.scrollWidth;
+    }
+
+    /**
      * 翻页
      */
     function toPage(arrow) {
@@ -479,15 +489,14 @@
     /**
      * 放大或缩小
      */
-    function scale(type) {
+    var biggerType = 0; // 0 - 原状，1 - 放大1次，2 - 放大两次
+    function scale(type, num) {
       var obj = getCurrent();
       var elem = obj.elem;
 
-      var setWAndH = function(elem, toW, toH) {
+      var setWAndH = function(elem, toW) {
         elem.style.maxWidth = toW + 'px';
         elem.style.width = toW + 'px';
-        elem.style.maxHeight = toH + 'px';
-        elem.style.height = toH + 'px';
       };
 
       getImgNaturalDimensions(elem, function(w, h) {
@@ -497,24 +506,26 @@
         if(type === 'bigger') {
           // 放大
           var maxW = w * 5; // 最大放大到实际的500%
-          var toW = nw * 1.2;
-          var toH = nh * 1.2;
+          var toW = nw * (num || 1.2);
 
           if(toW < maxW) {
-            setWAndH(elem, toW, toH);
+            setWAndH(elem, toW);
           }
         } else if(type === 'smaller') {
           // 缩小
           var minW = w / 20; // 最小缩小到实际的5%
-          var toW = nw * 0.8;
-          var toH = nh * 0.8;
+          var toW = nw * (num || 0.8);
 
           if(toW > minW) {
-            setWAndH(elem, toW, toH);
+            setWAndH(elem, toW);
           }
         } else if(type === 'real') {
           // 实际大小 
-          setWAndH(elem, w, h);
+          setWAndH(elem, w);
+        } else if(type === 'reset') {
+          // 恢复原状
+          elem.style.maxWidth = '100%';
+          elem.style.width = 'auto';
         }
       });      
     }
@@ -551,22 +562,27 @@
      */
     var isOverturn = false;
     function overturn() {
-      var obj = getCurrent();
-      var elem = obj.elem;
-
-      var setScale = function(elem, str) {
-        elem.parentNode.style.webkitTransform  = str;
-        elem.parentNode.style.MozTransform = str;
-        elem.parentNode.style.OTransform = str;
-        elem.parentNode.style.transform = str;
+      var setScale = function(str) {
+        imgcnt.style.webkitTransform  = str;
+        imgcnt.style.MozTransform = str;
+        imgcnt.style.OTransform = str;
+        imgcnt.style.transform = str;
       };
 
       if(isOverturn) {
-        setScale(elem, '');
+        setScale('');
       } else {
-        setScale(elem, 'scaleX(-1)');
+        setScale('scaleX(-1)');
       }
       isOverturn = !isOverturn;
+    }
+
+    /**
+     * 移动
+     */
+    function move(x, y) {
+      imgcnt.scrollLeft += x;
+      imgcnt.scrollTop += y;
     }
 
     /**
@@ -577,10 +593,9 @@
       var elem = obj.elem;
 
       // 恢复放大缩小
+      biggerType = 0;
       elem.style.maxWidth = '100%';
-      elem.style.maxHeight = '100%';
       elem.style.width = 'auto';
-      elem.style.height = 'auto';
 
       // 恢复旋转
       nowRotate = 0;
@@ -591,10 +606,14 @@
 
       // 恢复翻转
       isOverturn = false;
-      elem.parentNode.style.webkitTransform  = '';
-      elem.parentNode.style.MozTransform = '';
-      elem.parentNode.style.OTransform = '';
-      elem.parentNode.style.transform = '';
+      imgcnt.style.webkitTransform  = '';
+      imgcnt.style.MozTransform = '';
+      imgcnt.style.OTransform = '';
+      imgcnt.style.transform = '';
+
+      // 恢复移动
+      imgcnt.scrollTop = 0;
+      imgcnt.scrollLeft = 0;
     }
 
     if(!isPc) {
@@ -603,11 +622,17 @@
       showTopAndBottom();
 
       new T(imgcnt, {
-        tap: function() {
+        touchMove: function(evt) {
+          // 阻止默认事件
+          evt.preventDefault();
+        },
+        singleTap: function() {
           // 按图片显示头尾
           showTopAndBottom();
         },
         swipe: function(evt) {
+          if(isScroll()) return; // 可滚动状态不翻页
+
           if(evt.direction.toLowerCase() === 'left') {
             // 下一页
             toPage('down');
@@ -615,6 +640,32 @@
             // 上一页
             toPage('up');
           }
+        },
+        doubleTap: function() {
+          // 双击放大，放大两次后恢复原状
+          if(biggerType < 2) {
+            scale('bigger', 1.8); 
+            biggerType ++;
+          } else {
+            scale('reset');
+            biggerType = 0;
+          }
+        },
+        pinch: function(evt) {
+          // 放大缩小
+          // TODO
+          console.log(evt.scale);
+        },
+        rotate: function(evt) {
+          // 旋转
+          // TODO
+          console.log(evt.angle);
+        },
+        pressMove: function(evt) {
+          // 拖动
+          if(!isScroll()) return;
+
+          move(-evt.deltaX, -evt.deltaY);
         }
       });
 
@@ -682,6 +733,35 @@
           // 上一页
           toPage('up');
         }
+      });
+
+      // 拖拽移动
+      var isMouseDown = false;
+      var cacheObj = {x: 0, y: 0};
+      addEvent(imgcnt, 'mousedown', function(evt) {
+        evt = evt || window.event;
+
+        isMouseDown = true;
+        cacheObj.x = evt.screenX;
+        cacheObj.y = evt.screenY;
+      });
+      addEvent(imgcnt, 'mousemove', function(evt) {
+        if(!isMouseDown || !isScroll()) return;
+
+        evt = evt || window.event;
+        evt.preventDefault ? evt.preventDefault() : evt.returnValue = false;
+
+        var ox = cacheObj.x
+        var oy = cacheObj.y
+        cacheObj.x = evt.screenX;
+        cacheObj.y = evt.screenY;
+
+        move(ox - cacheObj.x, oy - cacheObj.y);
+      });
+      addEvent(document.body, 'mouseup', function(evt) {
+        isMouseDown = false;
+        cacheObj.x = 0;
+        cacheObj.y = 0;
       });
 
       // 添加返回事件
