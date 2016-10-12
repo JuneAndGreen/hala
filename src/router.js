@@ -43,9 +43,18 @@ module.exports = function getRouter(map) {
 				let host = func;
 				func = function*(next) {
 					this.respond = false;
-					proxy(this.req, this.res, {
-	          target: host
-	        });
+					// host 需要去掉协议，TODO
+
+					if(this.protocol === 'http') {
+						proxy.http(this.req, this.res, {
+		          target: `http://${host}`
+		        });
+					} else if(this.protocol === 'https') {
+						proxy.https(this.req, this.res, {
+		          target: `https://${host}`
+		        });
+					}
+
 				};
 			}
 

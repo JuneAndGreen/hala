@@ -117,8 +117,8 @@ class Server {
 
     if(this.https) {
       server = https.createServer({
-        key: fs.readFileSync(path.join(__dirname, './config/key.pem')),
-        cert: fs.readFileSync(path.join(__dirname, './config/certificate.pem'))
+        key: fs.readFileSync(path.join(__dirname, './config/key.pem'), 'utf8'),
+        cert: fs.readFileSync(path.join(__dirname, './config/certificate.pem'), 'utf8')
       }, this.app.callback());
     } else {
       server = http.createServer(this.app.callback());

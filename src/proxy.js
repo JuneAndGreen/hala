@@ -1,7 +1,15 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const httpProxy = require('http-proxy');
 
+const httpsOptions = {
+  ssl: {
+  	key: fs.readFileSync(path.join(__dirname, './config/key.pem'), 'utf8'),
+  	cert: fs.readFileSync(path.join(__dirname, './config/certificate.pem'), 'utf8')
+  }
+};
 const proxy = httpProxy.createProxyServer({});
 
 proxy.on('error', function(err, req, res) {
@@ -17,8 +25,16 @@ proxy.on('proxyReq', function(proxyReq) {
   proxyReq.setHeader('X-Special-Proxy-Header', 'HALA');
 });
 
-module.exports = function(req, res, options) {
-  options = options || {};  
-  
-  return proxy.web(req, res, options);
+module.exports = {
+	http(req, res, options) {
+		options = options || {};  
+
+		return proxy.web(req, res, options);
+	},
+
+	https(req, res, options) {
+		options = Object.assign(options || {}, httpsOptions);  
+
+		return proxy.web(req, res, options);
+	}
 };
