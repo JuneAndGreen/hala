@@ -30,6 +30,7 @@ npm install hala
 -r, --resroot [path], 代理服务器的资源目录，默认是webroot的值
 -u, --uploadroot [path], 代理服务器的文件上传暂存目录，默认是webroot的值
 --no-launch, 是否要停止自动打开浏览器，默认为false
+--https, 是否要切换成https服务，默认为false
 ```
 
 ### 直接依赖使用
@@ -60,6 +61,7 @@ module.exports = {
     resroot: './res/', // 代理服务器的资源目录，默认是webroot的值
     uploadroot: './uploads/', // 代理服务器的文件上传暂存目录，默认是webroot的值
     launch: true,  // 是否要自动打开浏览器，默认为true
+    https: true, // 是否开启https服务器
     routes: {
         // 路由
         'GET /xxx/xxx': function*(next) {},

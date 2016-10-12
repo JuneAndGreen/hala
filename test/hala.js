@@ -6,6 +6,7 @@ module.exports = {
 	port: 8088,
 	webroot: path.join(__dirname, './demo/'),
 	viewroot: './views',
+	https: true,
 	routes: {
 		'GET /api/account/authority/get': function*(next) {
 			this.response.body = {

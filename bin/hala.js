@@ -26,6 +26,7 @@ commander
 	.option('-r, --resroot [path]', '代理服务器的资源目录，默认是webroot的值')
 	.option('-u, --uploadroot [path]', '代理服务器的文件上传暂存目录，默认是webroot的值')
 	.option('--no-launch', '是否要停止自动打开浏览器，默认为false')
+	.option('--https', '是否要切换成https服务，默认为false')
 
 	.parse(process.argv)
 

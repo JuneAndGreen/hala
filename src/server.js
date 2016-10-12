@@ -8,6 +8,9 @@
 const fs = require('fs');
 const path = require('path');
 
+const http = require('http');
+const https = require('https');
+
 const koa = require('koa');
 const session = require('koa-session');
 const bodyParser = require('koa-body');
@@ -39,6 +42,8 @@ class Server {
     this.routes = config.routes || {};
     this.port = parseInt(config.port || 8000);
     this.launch = typeof config.launch === 'boolean' ? config.launch : true;
+
+    this.https = !!config.https;
   }
   /**
    * 初始化
@@ -105,12 +110,28 @@ class Server {
     this.app.on('error', (err, ctx) => this.onerror(err, ctx));
   }
   /**
+   * 监听
+   */
+  listen() {
+    let server;
+
+    if(this.https) {
+      server = https.createServer({
+        key: fs.readFileSync(path.join(__dirname, './config/key.pem')),
+        cert: fs.readFileSync(path.join(__dirname, './config/certificate.pem'))
+      }, this.app.callback());
+    } else {
+      server = http.createServer(this.app.callback());
+    }
+    return server.listen.apply(server, arguments);
+  }
+  /**
    * 启动
    */
   start() {
     let port = this.port;
     console.log(`监听端口：${port}...`);
-    this.server = this.app.listen(port);
+    this.server = this.listen(port);
 
     this.__reseting = false; // 重置完成
 
@@ -118,7 +139,7 @@ class Server {
     this.server.on('error', (err, ctx) => this.onerror(err, ctx));
 
     this.server.on('listening', () => {
-      let url = `http://localhost:${this.port}`;
+      let url = `${this.https ? 'https' : 'http'}://localhost:${this.port}`;
       console.log(`代理服务器已成功启动，当前根路径为 ${url}`);
       // 自动打开浏览器
       if(this.launch) _.openBrowser(url);
