@@ -2,13 +2,24 @@
 
 const path = require('path');
 
+const cache = {};
+
 module.exports = {
 	port: 8088,
 	webroot: path.join(__dirname, './demo/'),
 	viewroot: './views',
-	https: true,
+	https: false,
+	// ws: {
+	// 	open: (ws) => {
+	// 		cache.ws = ws;
+	// 	},
+	// 	message: (data) => {
+	// 		cache.ws.send(`reply: ${data}`);
+	// 	}
+	// },
+	ws: 'ws://127.0.0.1:8089', // 代理
 	routes: {
-		'GET /xxx': 'http://127.0.0.1:8089',
+		'GET /xxx': 'http://127.0.0.1:8089', // 代理
 		'GET /api/account/authority/get': function*(next) {
 			this.response.body = {
 				"message": "5MddQ",

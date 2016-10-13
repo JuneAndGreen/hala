@@ -7,7 +7,6 @@
 
 const fs = require('fs');
 const path = require('path');
-
 const http = require('http');
 const https = require('https');
 
@@ -16,6 +15,7 @@ const session = require('koa-session');
 const bodyParser = require('koa-body');
 const staticDir = require('koa-static');
 const render = require('koa-ejs');
+const WebSocket = require('faye-websocket');
 
 const wrapRouter = require('./router');
 const folder = require('./folder');
@@ -44,6 +44,7 @@ class Server {
     this.launch = typeof config.launch === 'boolean' ? config.launch : true;
 
     this.https = !!config.https;
+    this.ws = config.ws; // websocket
   }
   /**
    * 初始化
@@ -97,7 +98,7 @@ class Server {
 
     // 路由
     if(typeof this.routes === 'object') {
-      let route = wrapRouter(this.routes);
+      let route = wrapRouter.dealWithRouter(this.routes);
       this.app
         .use(route.routes())
         .use(route.allowedMethods());
@@ -165,6 +166,31 @@ class Server {
     this.server.on('connection', (socket) => {
       this.connection.push(socket);
     });
+
+    // websocket
+    if(this.ws) {
+      this.server.on('upgrade', (req, socket, body) => {
+        if(!WebSocket.isWebSocket(req)) return;
+
+        console.log('接收到来自客户端的WebSocket连接');
+
+        if(typeof this.ws === 'string') {
+          // 走代理的方式
+          wrapRouter.dealWithWs(req, socket, body, this.ws);
+        } else if(typeof this.ws === 'object') {
+          let ws = new WebSocket(req, socket, body);
+
+          ws.on('open', () => {this.ws.open&&this.ws.open.call(null, ws)});
+
+          ws.on('message', (evt) => {this.ws.message&&this.ws.message.call(null, evt.data)});
+
+          ws.on('close', (evt) => {
+            this.ws.close&&this.ws.close.call(null, evt);
+            ws = null;
+          });
+        }
+      });
+    }
   }
   /**
    * 重置

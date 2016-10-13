@@ -37,5 +37,11 @@ module.exports = {
 		options = Object.assign(options || {}, httpsOptions);  
 
 		return proxy.web(req, res, options);
-	}
+	},
+
+  ws(req, socket, body, options) {
+    options = options || {}; 
+
+    return proxy.web(req, socket, body, options); 
+  }
 };

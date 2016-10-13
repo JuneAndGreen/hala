@@ -71,7 +71,24 @@ module.exports = {
         'GET /yyy/yyy1': '1.1.1.1:8888',
         'GET /yyy/yyy2': 'yyy.com',
         'GET /yyy/yyy3': 'http://yyy.com'
-    }
+    },
+    ws: {
+        open: (ws) => { 
+            /* 建立连接，
+               - ws为一个websocket对象实例
+               - 调用ws.send(data)可发送消息给客户端
+               - 调用ws.close(code, reason)可关闭连接 */ 
+        },
+        message: (data) => { 
+            /* 接收到客户端发来的消息 */ 
+        },
+        close: (evt) => { 
+            /* 连接关闭，
+               - evt.code 状态码
+               - event.reason是关闭原因 */ 
+        }
+    },
+    // ws: 'localhost:8888', //如果需要代理websocket，可直接传一个代理地址的string串进来
 };
 ```
 

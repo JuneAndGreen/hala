@@ -61,7 +61,6 @@ module.exports = function(obj) {
               name: file,
               path: imgPath
             });
-            console.log(pathname, file)
           }
         }
         if(fs.statSync(filePath).isDirectory()) {

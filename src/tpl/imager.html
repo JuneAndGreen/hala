@@ -163,13 +163,13 @@
 
     .imgcnt img {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 0;
+      left: 0;
 
-      -webkit-transform: translate3d(-50%, -50%, 0);
-      -moz-transform: translate3d(-50%, -50%, 0);
-      -o-transform: translate3d(-50%, -50%, 0);
-      transform: translate3d(-50%, -50%, 0);
+      -webkit-transform: translate3d(0, 0, 0);
+      -moz-transform: translate3d(0, 0, 0);
+      -o-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
 
       max-width: 100%;
       cursor: move;
@@ -416,6 +416,26 @@
     }
 
     /**
+     * 居中图片
+     */
+    function middle(img) {
+      var vh = imgcnt.clientHeight;
+      var vw = imgcnt.clientWidth;
+      var ih = img.height;
+      var iw = img.width;
+
+      var top = vh <= ih ? 0 : (vh-ih)/2;
+      var left = vw <= iw ? 0 : (vw-iw)/2;
+
+      img.style.top = top + 'px';
+      img.style.left = left + 'px';
+    }
+    // 全部先做一次居中处理
+    for(var i=imgsLen-1; i>=0; i--) {
+      middle(imgs[i]);
+    }
+
+    /**
      * 是否可滚动
      */
     function isScroll() {
@@ -527,10 +547,12 @@
           elem.style.maxWidth = '100%';
           elem.style.width = 'auto';
         }
+
+        middle(elem); // 居中处理
       });      
     }
 
-    var transformPrefix = 'translate3d(-50%, -50%, 0) ';
+    var transformPrefix = 'translate3d(0, 0, 0) ';
     /**
      * 旋转
      */
@@ -555,6 +577,8 @@
       elem.style.MozTransform = transformPrefix + rotateStr + nowRotate + 'deg)';
       elem.style.OTransform = transformPrefix + rotateStr + nowRotate + 'deg)';
       elem.style.transform = transformPrefix + rotateStr + nowRotate + 'deg)';
+
+      middle(elem); // 居中处理
     }
 
     /**
@@ -614,6 +638,8 @@
       // 恢复移动
       imgcnt.scrollTop = 0;
       imgcnt.scrollLeft = 0;
+
+      middle(elem); // 居中处理
     }
 
     if(!isPc) {
@@ -661,12 +687,23 @@
           // TODO
           console.log(evt.angle);
         },
-        pressMove: function(evt) {
-          // 拖动
-          if(!isScroll()) return;
+        pressMove: (function() {
+          var deltaX = deltaY = 0;
+          var isMoving = false;
+          return function(evt) {
+            // 拖动
+            deltaX += evt.deltaX;
+            deltaY += evt.deltaY;
+            if(isMoving || !isScroll()) return;
 
-          move(-evt.deltaX, -evt.deltaY);
-        }
+            move(-deltaX, -deltaY);
+            deltaX = deltaY = 0;
+            
+            // 节流
+            isMoving = true;
+            setTimeout(function() {isMoving = false;}, 100);
+          }
+        })()
       });
 
       new T(title, {
@@ -737,6 +774,7 @@
 
       // 拖拽移动
       var isMouseDown = false;
+      var isMoving = false;
       var cacheObj = {x: 0, y: 0};
       addEvent(imgcnt, 'mousedown', function(evt) {
         evt = evt || window.event;
@@ -745,11 +783,11 @@
         cacheObj.x = evt.screenX;
         cacheObj.y = evt.screenY;
       });
-      addEvent(imgcnt, 'mousemove', function(evt) {
-        if(!isMouseDown || !isScroll()) return;
-
+      addEvent(window, 'mousemove', function(evt) {
         evt = evt || window.event;
         evt.preventDefault ? evt.preventDefault() : evt.returnValue = false;
+
+        if(isMoving || !isMouseDown || !isScroll()) return;
 
         var ox = cacheObj.x
         var oy = cacheObj.y
@@ -757,8 +795,12 @@
         cacheObj.y = evt.screenY;
 
         move(ox - cacheObj.x, oy - cacheObj.y);
+
+        // 节流
+        isMoving = true;
+        setTimeout(function() {isMoving = false;}, 100);
       });
-      addEvent(document.body, 'mouseup', function(evt) {
+      addEvent(window, 'mouseup', function(evt) {
         isMouseDown = false;
         cacheObj.x = 0;
         cacheObj.y = 0;
@@ -777,6 +819,21 @@
       addEvent(oprs['reset'], 'click', function() {reset();});
       addEvent(oprs['real'], 'click', function() {scale('real');});
     }
+
+    // 窗口变化需要重新居中
+    var isResizing = false;
+    addEvent(window, 'resize', function() {
+      if(isResizing) return;
+
+      var obj = getCurrent();
+      var elem = obj.elem;
+
+      middle(elem); // 居中处理
+
+      // 节流
+      isResizing = true;
+      setTimeout(function() {isResizing = false;}, 100);
+    });
 
     /**
      * 返回
