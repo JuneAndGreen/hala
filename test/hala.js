@@ -6,9 +6,9 @@ module.exports = {
 	port: 8088,
 	webroot: path.join(__dirname, './demo/'),
 	viewroot: './views',
-	https: false,
+	https: true,
 	routes: {
-		'GET /xxx': '127.0.0.1:8089', // 需自己另起服务
+		'GET /xxx': 'http://127.0.0.1:8089',
 		'GET /api/account/authority/get': function*(next) {
 			this.response.body = {
 				"message": "5MddQ",

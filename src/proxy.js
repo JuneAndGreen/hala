@@ -8,7 +8,8 @@ const httpsOptions = {
   ssl: {
   	key: fs.readFileSync(path.join(__dirname, './config/key.pem'), 'utf8'),
   	cert: fs.readFileSync(path.join(__dirname, './config/certificate.pem'), 'utf8')
-  }
+  },
+  secure: false // 为了使用自签名证书
 };
 const proxy = httpProxy.createProxyServer({});
 

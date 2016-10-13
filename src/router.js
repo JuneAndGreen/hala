@@ -19,6 +19,14 @@ const methodMap = {
 	all: ['get', 'post', 'put', 'del', 'patch', 'head']
 };
 
+// 获取url中的协议
+const r = /(http|https)\:/g;
+function getProtocol(url) {
+	let arr = url.match(r);
+	
+	return arr&&arr[0];
+}
+
 module.exports = function getRouter(map) {
 	let router = Router();
 	let urls = Object.keys(map);
@@ -43,15 +51,15 @@ module.exports = function getRouter(map) {
 				let host = func;
 				func = function*(next) {
 					this.respond = false;
-					// host 需要去掉协议，TODO
+					let protocol = getProtocol(host); // 获取host中已经带有的协议名
 
 					if(this.protocol === 'http') {
 						proxy.http(this.req, this.res, {
-		          target: `http://${host}`
+		          target: protocol ? host : `http://${host}`
 		        });
 					} else if(this.protocol === 'https') {
 						proxy.https(this.req, this.res, {
-		          target: `https://${host}`
+		          target: protocol ? host : `https://${host}`
 		        });
 					}
 

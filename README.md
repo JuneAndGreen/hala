@@ -61,15 +61,16 @@ module.exports = {
     resroot: './res/', // 代理服务器的资源目录，默认是webroot的值
     uploadroot: './uploads/', // 代理服务器的文件上传暂存目录，默认是webroot的值
     launch: true,  // 是否要自动打开浏览器，默认为true
-    https: false, // 是否开启https服务器
+    https: true, // 是否开启https服务器，默认为false
     routes: {
         // 路由
         'GET /xxx/xxx': function*(next) {},
         'ALL /vvv/vvv': function*(next) {},
 
-        // 代理到其他服务器
+        // 代理到其他服务器，默认代理地址协议和请求协议相同，如需要从https代理到http，请特别指明协议名
         'GET /yyy/yyy1': '1.1.1.1:8888',
         'GET /yyy/yyy2': 'yyy.com',
+        'GET /yyy/yyy3': 'http://yyy.com'
     }
 };
 ```
