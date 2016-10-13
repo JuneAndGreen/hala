@@ -4,7 +4,7 @@
 <head>
   <title>HALA 图片浏览(<%= wholePath %>)</title>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" user-scalable="no">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <link rel="shortcut icon" href="<%= favicon %>" type="image/x-icon" />
 
   <style type="text/css">
@@ -235,23 +235,26 @@
     }
 
     /* 移动端 */
-    .m .top, .m .bottom {
+    .m .top {
       transition: all .5s ease;
       -webkit-transition: all .5s ease;
     }
     .m.mhide .top {
       top: -60px;
     }
-    .m.mhide .bottom {
-      bottom: -60px;
-    }
     .m .content{
       top: 0;
       bottom: 0;
     }
 
-    .m .opr {
-      font-size: 10px;
+    .m .bottom {
+      display: none;
+    }
+
+    @media (max-width: 800px) {
+      .bottom {
+        display: none;
+      }
     }
     
   </style>
@@ -304,6 +307,8 @@
     var isPc = !isPhone && !isAndroid && !isSymbian;
 
     if(!isPc) {
+      // 增加样式区分
+      addClass(document.body, 'm');
       // 增加移动端手势事件
       (function(){function f(a){return Math.sqrt(a.x*a.x+a.y*a.y)}var h=function(a,b){a.addEventListener("touchstart",this.st.bind(this),!1);a.addEventListener("touchmove",this.mv.bind(this),!1);a.addEventListener("touchend",this.end.bind(this),!1);a.addEventListener("touchcancel",this.cancel.bind(this),!1);this.preV={x:null,y:null};this.psl=null;this.scale=1;this.idt=!1;this.ro=b.rotate||function(){};this.ts=b.touchStart||function(){};this.mps=b.multipointStart||
       function(){};this.mpe=b.multipointEnd||function(){};this.p=b.pinch||function(){};this.swipe=b.swipe||function(){};this.tap=b.tap||function(){};this.dt=b.doubleTap||function(){};this.lt=b.longTap||function(){};this.sit=b.singleTap||function(){};this.pem=b.pressMove||function(){};this.tm=b.touchMove||function(){};this.te=b.touchEnd||function(){};this.toc=b.touchCancel||function(){};this.x1=this.x2=this.y1=this.y2=this.swt=this.ltt=
@@ -431,9 +436,11 @@
       img.style.left = left + 'px';
     }
     // 全部先做一次居中处理
-    for(var i=imgsLen-1; i>=0; i--) {
-      middle(imgs[i]);
-    }
+    setTimeout(function() {
+      for(var i=imgsLen-1; i>=0; i--) {
+        middle(imgs[i]);
+      }
+    }, 100);
 
     /**
      * 是否可滚动
@@ -644,7 +651,6 @@
 
     if(!isPc) {
       // 移动端
-      addClass(document.body, 'm');
       showTopAndBottom();
 
       new T(imgcnt, {
@@ -682,11 +688,17 @@
           // TODO
           console.log(evt.scale);
         },
-        rotate: function(evt) {
-          // 旋转
-          // TODO
-          console.log(evt.angle);
-        },
+        rotate: (function() {
+          var isRotating = false;
+          return function(evt) {
+            // 旋转
+            if(isRotating) return;
+
+            var type = evt.angle > 0 ? 'right' : 'left';
+            rotate(type);
+            setTimeout(function() {isRotating = false;}, 1000);
+          };
+        })(),
         pressMove: (function() {
           var deltaX = deltaY = 0;
           var isMoving = false;
@@ -713,17 +725,6 @@
           showToast(text);
         }
       });
-
-      new T(oprs['prev'], {tap: function() {toPage('up');}});
-      new T(oprs['next'], {tap: function() {toPage('down');}});
-      new T(oprs['bigger'], {tap: function() {scale('bigger');}});
-      new T(oprs['smaller'], {tap: function() {scale('smaller');}});
-      new T(oprs['left_rotate'], {tap: function() {rotate('left');}});
-      new T(oprs['right_rotate'], {tap: function() {rotate('right');}});
-      new T(oprs['overturn'], {tap: function() {overturn();}});
-      new T(oprs['reset'], {tap: function() {reset();}});
-      new T(oprs['real'], {tap: function() {scale('real');}});
-
     } else {
       // pc端
       var support = 'onwheel' in document.createElement('div') ? 'wheel' // 各个厂商的高版本浏览器都支持 wheel

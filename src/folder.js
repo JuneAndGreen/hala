@@ -69,8 +69,11 @@ module.exports = function(obj) {
         }
       });
 
+      // 修复某些版本的node读取不了query.hasOwnProperty的问题
+      query = Object.assign({}, query||{});
+      
       let body = '';
-      if(query&&query.hasOwnProperty('img')) {
+      if(query.hasOwnProperty('img')) {
         // 图片预览
         let locals = {
           join: path.join,
