@@ -11,6 +11,9 @@ const httpsOptions = {
   },
   secure: false // 为了使用自签名证书
 };
+const wsOptions = {
+  ws: true
+};
 const proxy = httpProxy.createProxyServer({});
 
 proxy.on('error', function(err, req, res) {
@@ -40,8 +43,14 @@ module.exports = {
 	},
 
   ws(req, socket, body, options) {
-    options = options || {}; 
+    options = Object.assign(options || {}, wsOptions); 
 
-    return proxy.web(req, socket, body, options); 
+    return proxy.ws(req, socket, body, options); 
+  },
+
+  wss(req, socket, body, options) {
+    options = Object.assign(options || {}, wsOptions, httpsOptions); 
+
+    return proxy.ws(req, socket, body, options); 
   }
 };

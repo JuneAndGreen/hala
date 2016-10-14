@@ -88,7 +88,8 @@ module.exports = {
                - event.reason是关闭原因 */ 
         }
     },
-    // ws: 'localhost:8888', //如果需要代理websocket，可直接传一个代理地址的string串进来
+    //如果需要代理websocket，可直接传一个代理地址的string串进来。支持ws和wss协议，使用方式类似路由代理
+    // ws: 'localhost:8888', 
 };
 ```
 

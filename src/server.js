@@ -176,7 +176,7 @@ class Server {
 
         if(typeof this.ws === 'string') {
           // 走代理的方式
-          wrapRouter.dealWithWs(req, socket, body, this.ws);
+          wrapRouter.dealWithWs(req, socket, body, this.ws, this.https);
         } else if(typeof this.ws === 'object') {
           let ws = new WebSocket(req, socket, body);
 

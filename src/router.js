@@ -27,6 +27,14 @@ function getProtocol(url) {
 	return arr&&arr[0];
 }
 
+// 获取websocket url中的协议
+const wr = /(ws|wss)\:/g;
+function getWsProtocol(url) {
+	let arr = url.match(wr);
+	
+	return arr&&arr[0];
+}
+
 module.exports = {
 	// 处理路由
 	dealWithRouter(map) {
@@ -82,10 +90,17 @@ module.exports = {
 		return router;
 	},
 	// 处理websocket
-	dealWithWs(req, socket, body, ws) {
-		proxy.ws(req, socket, body, {
-			target: ws,
-			ws: true
-		});
+	dealWithWs(req, socket, body, ws, https) {
+		let protocol = getWsProtocol(ws);
+
+		if(!https) {
+			proxy.ws(req, socket, body, {
+				target: protocol ? ws : `ws://${ws}`
+			});
+		} else {
+			proxy.wss(req, socket, body, {
+				target: protocol ? ws : `wss://${ws}`
+			});
+		}
 	}
 };
