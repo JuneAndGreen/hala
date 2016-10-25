@@ -9,7 +9,7 @@ module.exports = {
 	webroot: path.join(__dirname, './demo/'),
 	viewroot: './views',
 	launch: false,
-	https: true,
+	https: false,
 	// ws: {
 	// 	open: (ws) => {
 	// 		cache.ws = ws;

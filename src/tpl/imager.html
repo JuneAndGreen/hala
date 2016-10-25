@@ -4,7 +4,7 @@
 <head>
   <title>HALA 图片浏览(<%= wholePath %>)</title>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <link rel="shortcut icon" href="<%= favicon %>" type="image/x-icon" />
 
   <style type="text/css">
@@ -171,7 +171,6 @@
       -o-transform: translate3d(0, 0, 0);
       transform: translate3d(0, 0, 0);
 
-      max-width: 100%;
       cursor: move;
     }
 
@@ -272,7 +271,7 @@
     <% } else { %>
     <div id="imgcnt" class="imgcnt">
       <% images.forEach(function(item, index) { %>
-      <img src="<%= item.path %>" title="<%= item.name %>" alt="<%= item.name %>" class="<% if(index!==0) { %>hide<% } %>">
+      <img src="<%= item.path %>" title="<%= item.name %>" alt="<%= item.name %>" class="<% if(index!==0) { %>hide<% } %>" style="max-width: 100%;">
       <% }); %>
     </div>
     <% } %>
@@ -370,6 +369,7 @@
     var imgcnt = document.getElementById('imgcnt');
     var imgs = imgcnt.getElementsByTagName('img');
     var title = document.getElementById('title');
+    var backBtn = document.getElementById('back');
     var imgsLen = imgs.length;
 
     var oprs = {
@@ -424,23 +424,35 @@
      * 居中图片
      */
     function middle(img) {
-      var vh = imgcnt.clientHeight;
-      var vw = imgcnt.clientWidth;
-      var ih = img.height;
-      var iw = img.width;
+      getImgNaturalDimensions(img, function(iw, ih) {
+        var vw = imgcnt.clientWidth;
+        var vh = imgcnt.clientHeight;
+        var isAuto = !!(img.style.maxWidth === '100%');
+        var isScale = !!(img.style.width !== iw+'px');
 
-      var top = vh <= ih ? 0 : (vh-ih)/2;
-      var left = vw <= iw ? 0 : (vw-iw)/2;
+        if(isAuto && vw < iw) {
+          // 当屏幕上图片宽度被自适应时
+          ih = vw * ih / iw; // 获取屏幕上真实高度
+        }
+        if(!isAuto && isScale) {
+          // 当屏幕上图片宽度被缩放过时
+          var rw = parseInt(img.style.width, 10);
+          ih = rw * ih / iw; // 获取屏幕上真实高度
+          iw = rw;
+        }
 
-      img.style.top = top + 'px';
-      img.style.left = left + 'px';
+        var left = vw > iw ? (vw-iw)/2 : 0;
+        var top = vh > ih ? (vh-ih)/2 : 0;
+
+
+        img.style.left = left + 'px';
+        img.style.top = top + 'px';
+      });
     }
     // 全部先做一次居中处理
-    setTimeout(function() {
-      for(var i=imgsLen-1; i>=0; i--) {
-        middle(imgs[i]);
-      }
-    }, 100);
+    for(var i=0; i<imgsLen; i++) {
+      middle(imgs[i]);
+    }
 
     /**
      * 是否可滚动
@@ -480,6 +492,7 @@
       reset();
       addClass(elem, 'hide');
       removeClass(nElem, 'hide');
+      middle(nElem);
       title.innerHTML = nElem.title;
       title.title = nElem.title;
     }
@@ -688,17 +701,6 @@
           // TODO
           console.log(evt.scale);
         },
-        rotate: (function() {
-          var isRotating = false;
-          return function(evt) {
-            // 旋转
-            if(isRotating) return;
-
-            var type = evt.angle > 0 ? 'right' : 'left';
-            rotate(type);
-            setTimeout(function() {isRotating = false;}, 1000);
-          };
-        })(),
         pressMove: (function() {
           var deltaX = deltaY = 0;
           var isMoving = false;
@@ -724,6 +726,10 @@
           var text = title.innerHTML;
           showToast(text);
         }
+      });
+
+      new T(backBtn, {
+        tap: back
       });
     } else {
       // pc端
@@ -808,7 +814,7 @@
       });
 
       // 添加返回事件
-      addEvent(document.getElementById('back'), 'click', back);
+      addEvent(backBtn, 'click', back);
 
       addEvent(oprs['prev'], 'click', function() {toPage('up');});
       addEvent(oprs['next'], 'click', function() {toPage('down');});

@@ -4,7 +4,7 @@ const cache = {};
 
 module.exports = {
 	port: 8089,
-	https: true,
+	https: false,
 	launch: false,
 	ws: {
 		open: (ws) => {
