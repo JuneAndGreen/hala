@@ -25,7 +25,7 @@ module.exports = function(obj) {
     let webroot = obj.webroot;
     let port = obj.port;
 
-    let pathname = this.path;
+    let pathname = decodeURIComponent(this.path);
     let query = this.query;
     let wholePath = path.join(webroot, pathname);
     let prevpath;
