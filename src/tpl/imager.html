@@ -246,14 +246,15 @@
       bottom: 0;
     }
 
-    .m .bottom {
-      display: none;
+    .m.mhide .bottom {
+      bottom: -60px;
     }
-
-    @media (max-width: 800px) {
-      .bottom {
-        display: none;
-      }
+    .m .bottom {
+      transition: all .5s ease;
+      -webkit-transition: all .5s ease;
+    }
+    .m .m_bottom_hide {
+      display: none;
     }
     
   </style>
@@ -271,7 +272,13 @@
     <% } else { %>
     <div id="imgcnt" class="imgcnt">
       <% images.forEach(function(item, index) { %>
+      
+      <% if(index < 5) { %>
       <img src="<%= item.path %>" title="<%= item.name %>" alt="<%= item.name %>" class="<% if(index!==0) { %>hide<% } %>" style="max-width: 100%;">
+      <% } else { %>
+      <img src="" data-src="<%= item.path %>" title="<%= item.name %>" alt="<%= item.name %>" class="<% if(index!==0) { %>hide<% } %>" style="max-width: 100%;">
+      <% } %>
+
       <% }); %>
     </div>
     <% } %>
@@ -281,13 +288,13 @@
     <div class="clearfix">
       <div id="prev" class="opr">上一页</div>
       <div id="next" class="opr">下一页</div>
-      <div id="bigger" class="opr">放大</div>
-      <div id="smaller" class="opr">缩小</div>
-      <div id="left_rotate" class="opr">左旋</div>
-      <div id="right_rotate" class="opr">右旋</div>
-      <div id="overturn" class="opr">翻转</div>
-      <div id="reset" class="opr">重置</div>
-      <div id="real" class="opr">实际大小</div>
+      <div id="bigger" class="opr m_bottom_hide">放大</div>
+      <div id="smaller" class="opr m_bottom_hide">缩小</div>
+      <div id="left_rotate" class="opr m_bottom_hide">左旋</div>
+      <div id="right_rotate" class="opr m_bottom_hide">右旋</div>
+      <div id="overturn" class="opr m_bottom_hide">翻转</div>
+      <div id="reset" class="opr m_bottom_hide">重置</div>
+      <div id="real" class="opr m_bottom_hide">实际大小</div>
     </div>
   </div>
 
@@ -460,6 +467,28 @@
     function isScroll() {
       return imgcnt.clientHeight < imgcnt.scrollHeight || imgcnt.clientWidth < imgcnt.scrollWidth;
     }
+    function isXScroll() {
+      return imgcnt.clientWidth < imgcnt.scrollWidth;
+    }
+
+    /**
+     * 懒加载
+     */
+    function lazyLoad(index) {
+      for(var i=index; i<index+5; i++) {
+        var elem = imgs[i];
+        if(elem && elem.dataset && elem.dataset.src) {
+          elem.src = elem.dataset.src;
+          elem.dataset.src = '';
+
+          elem.onload = function() {
+            // 加载完居中
+            elem.onload = null;
+            middle(elem);
+          };
+        }
+      }
+    }
 
     /**
      * 翻页
@@ -483,6 +512,7 @@
         case 'down':
           // 下一页
           nIndex = index >= imgsLen - 1 ? 0 : index + 1;
+          lazyLoad(nIndex);
           break;
         default: 
           break;
@@ -676,7 +706,7 @@
           showTopAndBottom();
         },
         swipe: function(evt) {
-          if(isScroll()) return; // 可滚动状态不翻页
+          if(isXScroll()) return; // 可滚动状态不翻页
 
           if(evt.direction.toLowerCase() === 'left') {
             // 下一页
@@ -728,9 +758,10 @@
         }
       });
 
-      new T(backBtn, {
-        tap: back
-      });
+      new T(backBtn, {tap: back});
+
+      new T(oprs['prev'], {tap: function() {toPage('up');}});
+      new T(oprs['next'], {tap: function() {toPage('down');}});
     } else {
       // pc端
       var support = 'onwheel' in document.createElement('div') ? 'wheel' // 各个厂商的高版本浏览器都支持 wheel
