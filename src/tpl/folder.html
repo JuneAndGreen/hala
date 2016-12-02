@@ -246,12 +246,14 @@
   </ul>
 
   <div class="helper">
+    <% if(qrcode) { %>
     <div class="qrcode">
       <div id="qrcode">
         <%- qrcode %>
       </div>
       <h3 class="title">扫描二维码在移动设备打开</h3>
     </div>
+    <% } %>
 
     <div class="ips">
       <h3>切换到其他ip：</h3>

@@ -71,6 +71,14 @@ module.exports = function(obj) {
 
       // 修复某些版本的node读取不了query.hasOwnProperty的问题
       query = Object.assign({}, query||{});
+
+      // 路径二维码
+      var qrcode;
+      try {
+        qrcode = _.getQRCode(_.getFullUrl(this), 2).createImgTag(4);
+      } catch(err) {
+        qrcode = '';
+      }
       
       let body = '';
       if(query.hasOwnProperty('img')) {
