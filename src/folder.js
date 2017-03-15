@@ -7,13 +7,15 @@
 
 const fs = require('fs');
 const path = require('path');
-const ejs = require('ejs');
+const parse = require('tooltpl').parse;
 
 const _ = require('./util');
+const icons = require('./tpl/icons');
 
 // 预览文件模板
 const tpl = fs.readFileSync(path.join(__dirname, './tpl/folder.html'), 'utf8');
-const render = ejs.compile(tpl);
+const css = fs.readFileSync(path.join(__dirname, './tpl/folder.css'), 'utf8');
+const render = parse(tpl);
 
 module.exports = function(obj) {
   return function*(next) {
@@ -71,6 +73,8 @@ module.exports = function(obj) {
         pathname,
         port,
         wholePath,
+        css,
+        icons,
         ips: _.getIPs(),
         qrcode: _.getQRCode(_.getFullUrl(this), 2).createImgTag(4)
       };

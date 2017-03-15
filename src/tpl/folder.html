@@ -1,262 +1,67 @@
-<% var prev = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTU3NEY2MDQ1RUQ3MTFFNjgwNTNFMjgwRDJERENBNUYiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTU3NEY2MDM1RUQ3MTFFNjgwNTNFMjgwRDJERENBNUYiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjAxNzM1OEZGMUY1NTExRTZBNUVBQzdEQjUzODJBODk1IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAxNzM1OTAwMUY1NTExRTZBNUVBQzdEQjUzODJBODk1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+PDphhAAAAT9JREFUeNrslLFKxEAQhidySRSJtQpiK/gCilaClVh5YCOHjyBiJ2IjGBQhj+Ab2FiIYGFlb5lOsBC0OcQiJiR+C3MS1tvcgVdYOPDB7mb2353ZmXhVVckobUxGbH9fsGUvFEUhZVmK53m9pRA+oTHZvu/3F0ySRNI0lSAIJpkewxaswItLzDxsHMcSRdFPwTzPJcuyBYYXsAYnTWI9QWfIhLoPezDH9ANW4bZPvt/gEm4ac4jNwrSOAzC3HTdnWX4TsA2HEEPpeuUDWIdHkwENeUYPqbMI13AEy4PK5h42dMO5Ctr2rIeL5toZcn3Djqbg1eHzrlFMDSMo6vzU8H0XInhwClICbVga4qcxD224wvfOKUjFb4Zh2KGwBwl24RTOEOx+l519E1rPp/VatdZzmSmTzG497/9/+Gv7EmAA7YldEeVM7fIAAAAASUVORK5CYII='; %>
-<% var folder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxRjNEMTg2MzFGNjAxMUU2QTVFQUM3REI1MzgyQTg5NSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDoxRjNEMTg2NDFGNjAxMUU2QTVFQUM3REI1MzgyQTg5NSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjFGM0QxODYxMUY2MDExRTZBNUVBQzdEQjUzODJBODk1IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjFGM0QxODYyMUY2MDExRTZBNUVBQzdEQjUzODJBODk1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+tGZ3RAAAAJhJREFUeNpi/P//PwMtABMDjQDNDGYBEd+OupBtAJf1Hvq6mBEUeT+u1YA5/96fmAiksoGYGYvaf0C8GogjmQQt/pMaxjk4DIWpDQfiQpJd/P/H8/+MHBIgYXJ8/weIQT4uwXAxI4ckuYbCEkI+rSKPZehmkFGDcRr8l0LzfuEyuA1UJpFpKEhfJ9acR/VCaDRV0NRggAADAEZJLL77yGoMAAAAAElFTkSuQmCC'; %>
-<% var file = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1ODBDNjM2RjRENzgxMUU2QTBFMUMwNDExMzk1MzE2QSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo1ODBDNjM3MDRENzgxMUU2QTBFMUMwNDExMzk1MzE2QSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjU4MEM2MzZENEQ3ODExRTZBMEUxQzA0MTEzOTUzMTZBIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU4MEM2MzZFNEQ3ODExRTZBMEUxQzA0MTEzOTUzMTZBIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8++kK/6wAAAG9JREFUeNpi/P//PwMtABMDjQDNDGbBJrh3716yDHN2dibKxVuB+D8OXENJUHjhkWsmZDgxYcyIhpENr6NV5DXiMpwaqaKR6FRBRNDAwP/hk0FGDSYpVfyntotPEmnGWVJdbDEow5hxtGqCAYAAAwDGRBfzCglKFAAAAABJRU5ErkJggg=='; %>
-<% var favicon = 'data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABMLAAATCwAAAAAAAAAAAAAAAAAAAAAAAP///wD///8E////Pf///5n6+vrR9fX14/X19eP7+/vS////mf///zz///8E////AAAAAAAAAAAA////AP///wD///8S////hO3t7dK8vLy4f39/klpaWoJcXFyCgoKClMDAwLvv7+/U////hP///xL///8A////AP///wD///8S/f39otHR0clPT09+AQEBZAAAAGMAAABkAAAAZAAAAGMCAgJkV1dXgdfX18/+/v6j////Ev///wD///8D////hNDQ0MgmJiZvBgYGZjo6OnYpKSlxAAAAZgAAAGYqKipxOjo6dgUFBWYvLy9y19fXz////4X///8D////Pevr689MTEx8AAAAYzQ0NHTk5OTcurq6tgAAAGUAAABlvb29uOPj49swMDBzAAAAY1paWoHv7+/T////Pf///5i2trayAAAAZAAAAGU6Ojp28vLy7MjIyMEAAABlAAAAZcrKysPx8fHrNjY2dQAAAGUAAABlwMDAuv///5n4+PjNdXV1jQAAAGQAAABlOjo6dvLy8u3Jycm/AAAAYgAAAGPLy8vC8fHx6zY2NnUAAABlAAAAZIODg5T7+/vR8fHx3k1NTX0AAABlAAAAZTo6Onbx8fHr5OTk3KWlpaelpaWn5eXl3fDw8Oo2NjZ1AAAAZQAAAGRdXV2C9fX14/Hx8d1MTEx8AAAAZQAAAGU6Ojp28PDw6vn5+ffu7u7o7u7u6Pr6+vfv7+/pNjY2dQAAAGUAAABkW1tbgvX19eL4+PjNcXFxiwAAAGQAAABlOjo6dvHx8ezOzs7GMDAwczAwMHPR0dHI8PDw6zY2NnUAAABlAAAAZICAgJL7+/vQ////l7Gxsa8AAABkAAAAZTo6Onby8vLsyMjIwAAAAGQAAABky8vLwvHx8es2NjZ1AAAAZQAAAGW8vLy3////mP///z7o6OjMREREeQAAAGM5OTl28PDw6sbGxr8AAABlAAAAZcnJycHv7+/pNTU1dQAAAGNRUVF+7e3t0f///z3///8D////hMrKysMdHR1tEhISaXx8fJBcXFyCAAAAZgAAAGZeXl6De3t7kBAQEGklJSVv0dHRyf///4X///8D////AP///xL8/PyhysrKw0FBQXkAAABiAAAAYgAAAGUAAABlAAAAYgAAAGJKSkp80NDQyP39/aL///8S////AP///wD///8A////Ev7+/oTo6OjNsbGxsHBwcItLS0t8TExMfXNzc421tbWz6+vr0P///4T///8S////AP///wAAAAAAAAAAAP///wD///8E////Pf7+/pj4+PjN8fHx3vHx8d74+PjO////mP///z3///8E////AAAAAAAAAAAA4AcAAMADAACAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAADAAwAA4AcAAA=='; %>
-
 <!DOCTYPE HTML>
 <html lang="en-US">
 <head>
-  <title>HALA 文件夹预览(<%= wholePath %>)</title>
+  <title>HALA 文件夹预览(${wholePath})</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <link rel="shortcut icon" href="<%= favicon %>" type="image/x-icon" />
+  <link rel="shortcut icon" href="${icons.favicon}" type="image/x-icon" />
 
   <style type="text/css">
-    /* 重置 */
-    body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, p, blockquote, th, td {
-      margin: 0;
-      padding: 0;
-    }
-    table {
-      border-collapse: collapse;
-      border-spacing: 0;
-    }
-    caption, th {
-      text-align: left;
-    }
-    fieldset, img, a img, iframe, html, body {
-      border: 0;
-    }
-    li{
-      list-style: none;
-    }
-    address, caption, cite, code, dfn, em, strong, th, var {
-      font-style: normal;
-      font-weight: normal;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      font-size: 100%;
-      font-weight: normal;
-    }
-    [hidefocus] {
-      outline: 0;
-    }
-    body {
-      word-wrap: break-word;
-      font: 18/normal "微软雅黑", arial, simsun;
-      color: #333;
-      background: #fff;
-    }
-    h1, h2, h3, h4, h5, h6, em, strong, b {
-      font-weight: bold;
-    }
-    a, button {
-      cursor: pointer;
-      text-decoration: none;
-    }
+    ${css}
 
-    /* 全局 */
-    html, body {
-      position: relative;
-      font-family: "微软雅黑", "microsoft yahei", arial, simsun;
-    }
-
-    .clearfix {
-      zoom: 1;
-    }
-    .clearfix:after {
-      display: block;
-      clear: both;
-      visibility: hidden;
-      height: 0;
-      overflow: hidden;
-      content: ".";
-    }
-
-    /* 当前目录提示信息 */
-    .current {
-      padding: 20px 40px;
-      border-bottom: 1px solid #ccc;
-      background: #eee;
-      font-size: 30px;
-      color: #555;
-    }
-
-    .scan_btns {
-      position: relative;
-      margin-top: 15px;
-    }
-    .scan_btn {
-      display: block;
-      float: left;
-      margin-right: 20px;
-      padding: 5px 15px;
-      background: #16a085;
-      color: #fff;
-      font-size: 18px;
-      font-weight: normal;
-      cursor: pointer;
-    }
-
-    /* 文件和文件夹列表 */
-    .m-folder {
-      padding: 20px 40px;
-    }
-    .prevpath, .folder, .file {
-      position: relative;
-    }
-    .prevpath a, .folder a, .file a {
-      position: relative;
-      padding-left: 30px;
-      height: 30px;
-      line-height: 30px;
-      color: #16a085;
-    }
-    .prevpath a:hover, .folder a:hover, .file a:hover {
-      color: #2a8371;
-      text-decoration: underline;
-    }
-    .prevpath a:visited, .folder a:visited, .file a:visited {
-      color: #16a085;
-    }
-    .prevpath .icon, .folder .icon, .file .icon {
-      position: absolute;
-      top: 5px;
-      left: 5px;
-      width: 20px;
-      height: 20px;
-      display: block;
-    }
     /* 图标 */
-    .prevpath .icon {
-      background:url(<%= prev %>) left top no-repeat;
-    }
-    .folder .icon {
-      background:url(<%= folder %>) left top no-repeat;
-    }
-    .file .icon {
-      background:url(<%= file %>) left top no-repeat;
-    }
-
-
-    .u-ebtn{
-      display: inline-block;
-      padding: .5em .8em;
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px;
-      border-radius: 3px;
-      background-color: #34495e;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .u-ebtn:hover{
-      background-color: #455a6f;
-    }
-    a.u-ebtn,a.u-ebtn:hover, a.u-ebtn:active{
-      text-decoration: none;
-      color: #fff;
-    }
-
-    /* 辅助工具 */
-    .helper {
-      position: fixed;
-      display: block;
-      top: 20px;
-      right: 20px;
-    }
-    @media (max-width: 800px) {
-      .helper {
-        display: none;
-      }
-    }
-
-    /* 二维码 */
-    .qrcode {
-      padding: 20px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      -webkit-border-radius: 4px;
-      -moz-border-radius: 4px;
-      border-radius: 4px;
-    }
-    .qrcode img {
-      width: 200px;
-      height: 200px;
-    }
-    .qrcode .title {
-      text-align: center;
-    }
-
-    /* ip列表 */
-    .ips {
-      margin-top: 20px;
-      padding: 20px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      -webkit-border-radius: 4px;
-      -moz-border-radius: 4px;
-      border-radius: 4px;
-    }
-    .ips h3 {
-      margin-bottom: 12px;
-    }
-    .ips ul {
-      padding-left: 20px;
-      list-style-type: disc;
-    }
-    .ips li {
-      list-style: inherit;
-    }
-    .ips a {
-      text-decoration: underline;
-      font-weight: bold;
-      color: #16a085;
-    }
+    .prevpath .icon \{
+      background:url(${icons.prev}) left top no-repeat;
+    \}
+    .folder .icon \{
+      background:url(${icons.folder}) left top no-repeat;
+    \}
+    .file .icon \{
+      background:url(${icons.file}) left top no-repeat;
+    \}
   </style>
 </head>
 <body>
   <h2 class="current">当前目录：
-    <strong id="dir"><%= pathname %></strong>
+    <strong id="dir">${pathname}</strong>
   </h2>
   <ul class="m-folder">
-    <% if(prevpath) { %>
+    {if prevpath}
       <li class="prevpath">
         <i class="icon"></i>
-        <a href="<%= join('/', prevpath) %>" title="回到上一级目录">回到上一级目录</a>
+        <a href="${join('/', prevpath)}" title="回到上一级目录">回到上一级目录</a>
       </li>
-    <% } %>
-    <% folders.forEach(function(item) { %>
+    {/if}
+    {list folders as item}
       <li class="folder">
         <i class="icon"></i>
-        <a href="<%= join(pathname, item) %>"><%= item %></a>
+        <a href="${join(pathname, item)}">${item}</a>
       </li>
-    <% }); %>
-    <% files.forEach(function(item) { %>
+    {/list}
+    {list files as item}
       <li class="file">
         <i class="icon"></i>
-        <a href="<%= join(pathname, item) %>"><%= item %></a>
+        <a href="${join(pathname, item)}">${item}</a>
       </li>
-    <% }); %>
+    {/list}
   </ul>
 
   <div class="helper">
-    <% if(qrcode) { %>
+    {if qrcode}
     <div class="qrcode">
       <div id="qrcode">
-        <%- qrcode %>
+        ${qrcode}
       </div>
       <h3 class="title">扫描二维码在移动设备打开</h3>
     </div>
-    <% } %>
+    {/if}
 
     <div class="ips">
       <h3>切换到其他ip：</h3>
       <ul>
-        <% ips.forEach(function(ip){ %>
-        <li><a  href="http://<%= ip + ':' + port + pathname %>"><%= ip + ':' + port %></a></li>
-        <% }) %>
+        {list ips as ip}
+        <li><a  href="http://${ip + ':' + port + pathname}">${ip + ':' + port}</a></li>
+        {/list}
       </ul>
     </div>
   </div>
