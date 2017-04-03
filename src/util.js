@@ -13,7 +13,7 @@ const _ = module.exports = {
   /**
    * 打开浏览器
    */
-  openBrowser: function(url) {
+  openBrowser(url) {
     let map = {
       darwin: 'open',
       win32: 'start'
@@ -24,7 +24,7 @@ const _ = module.exports = {
   /**
    * 获取本地ip列表
    */
-  getIPs: function() {
+  getIPs() {
     let ifaces = os.networkInterfaces();
     let ips = [];
     for(let dev in ifaces) {
@@ -39,7 +39,7 @@ const _ = module.exports = {
   /**
    * 获取二维码
    */
-  getQRCode: function(content, start){
+  getQRCode(content, start) {
     let qr;
     if(!start) start = 2;
     try {
@@ -58,7 +58,7 @@ const _ = module.exports = {
   /**
    * 获取完整路径，针对koa
    */
-  getFullUrl: function(ctx){
+  getFullUrl(ctx) {
     return `${ctx.protocol}://${ctx.host}${ctx.url}`;
   }
 };
