@@ -76,7 +76,7 @@ module.exports = function(obj) {
         css,
         icons,
         ips: _.getIPs(),
-        qrcode: _.getQRCode(_.getFullUrl(this), 2).createImgTag(4)
+        qrcode
       };
       // 渲染页面
       body = render(locals);
