@@ -216,7 +216,7 @@ class Server {
       console.log(`端口 ${this.port} 已被占用，尝试新端口 ${++this.port}`);
       setTimeout(this.start.bind(this), 1000);
     } else {
-      console.error(err.stack || err);
+      console.error(err.message || err);
     }
   }
 }
